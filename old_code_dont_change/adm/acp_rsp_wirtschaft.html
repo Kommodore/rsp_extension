@@ -1,0 +1,92 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- IF S_RSP_SELECT_USER -->
+
+	<h1>{L_USER_ADMIN}</h1>
+
+	<p>{L_USER_ADMIN_EXPLAIN}</p>
+
+	<form id="select_user" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_SELECT_USER}</legend>
+	<dl>
+		<dt><label for="username">{L_ENTER_USERNAME}:</label></dt>
+		<dd><input class="text medium" type="text" id="username" name="username" /></dd>
+		<dd>[ <a href="{U_FIND_USERNAME}" onclick="find_username(this.href); return false;">{L_FIND_USERNAME}</a> ]</dd>
+	</dl>
+
+	<p class="quick">
+		<input type="submit" name="submituser" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</fieldset>
+
+	</form>
+
+<!-- ENDIF -->
+
+<!-- IF S_RSP_WIRTSCHAFT -->
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_USER_ADMIN} :: {MANAGED_USERNAME}</h1>
+
+	<p>{L_USER_ADMIN_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+	
+	<!-- IF S_USER_IN_RSP -->
+	<form id="rsp_username" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_RSP_WIRTSCHAFT}</legend>
+		<dl>
+			<dt><label for="rsp_ress_art">{L_RSP_RESS_ART}:</label></dt>
+			<dd><select id="rsp_ress_art" name="rsp_ress_art">
+			<!-- BEGIN ress_block -->
+				<option value="{ress_block.ID}">{ress_block.NAME}</option>
+			<!-- END ress_block -->
+			</select>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="rsp_ress_modus">{L_RSP_RESS_MODUS}</label></dt>
+			<dd><label><input type="radio" id="rsp_ress_modus" name="rsp_ress_modus" value="add" checked="checked" class="radio" /> {L_RSP_RESS_ADD}</label>
+				<label><input type="radio" name="rsp_ress_modus" value="sub" class="radio" /> {L_RSP_RESS_SUB}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="rsp_ress_menge">{L_RSP_RESS_MENGE}</label></dt>
+			<dd><input class="text medium" type="text" id="rsp_ress_menge" name="rsp_ress_menge" value="0" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="rsp_ress_text">{L_RSP_RESS_TEXT}</label></dt>
+			<dd><input class="text medium" type="text" id="rsp_ress_text" name="rsp_ress_text" value="" /></dd>
+		</dl>
+
+	<p class="quick">
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</fieldset>
+	</form>
+	
+
+	<fieldset>
+		<legend>{L_USER_RESS_OVERVIEW}</legend>
+		<!-- BEGIN user_ress_block -->
+		<dl>
+			<dt><label>{user_ress_block.NAME}</label></dt>
+			<dd>{user_ress_block.MENGE}</dd>
+		</dl>
+		<!-- END user_ress_block -->
+	</fieldset>
+	
+	<!-- ENDIF -->
+
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->

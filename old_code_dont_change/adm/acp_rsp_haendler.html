@@ -1,0 +1,34 @@
+<!-- INCLUDE overall_header.html -->
+
+<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+<h1>{L_RSP_HAENDLER}</h1>
+
+<p>{L_USER_ADMIN_EXPLAIN}</p>
+
+<!-- IF S_ERROR -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{ERROR_MSG}</p>
+	</div>
+<!-- ENDIF -->
+
+
+
+<fieldset>
+	<legend>{L_RSP_WIRTSCHAFT}</legend>
+	<!-- BEGIN ress_block -->
+	<form id="rsp_haendler" method="post" action="{U_ACTION}">
+	<dl>
+		<dt><label for="ress_preis">{ress_block.NAME}</label></dt>
+		<dd><input type="hidden" name="ress_id" value="{ress_block.ID}" /><input class="text medium" type="text" id="ress_preis" name="ress_preis" value="{ress_block.PREIS}" /></dd>
+	</dl>
+	<p class="quick">
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</form>
+	<!-- END ress_block -->
+</fieldset>
+
+
+<!-- INCLUDE overall_footer.html -->

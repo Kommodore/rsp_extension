@@ -1,0 +1,138 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- IF S_RSP_SELECT_USER -->
+
+	<h1>{L_USER_ADMIN}</h1>
+
+	<p>{L_USER_ADMIN_EXPLAIN}</p>
+
+	<form id="select_user" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_SELECT_USER}</legend>
+	<dl>
+		<dt><label for="username">{L_ENTER_USERNAME}:</label></dt>
+		<dd><input class="text medium" type="text" id="username" name="username" /></dd>
+		<dd>[ <a href="{U_FIND_USERNAME}" onclick="find_username(this.href); return false;">{L_FIND_USERNAME}</a> ]</dd>
+	</dl>
+
+	<p class="quick">
+		<input type="submit" name="submituser" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</fieldset>
+
+	</form>
+
+<!-- ENDIF -->
+
+<!-- IF S_RSP_USER_OVERVIEW -->
+	<a href="{U_BACK}" style="float: {S_CONTENT_FLOW_END};">&laquo; {L_BACK}</a>
+
+	<h1>{L_USER_ADMIN} :: {MANAGED_USERNAME}</h1>
+
+	<p>{L_USER_ADMIN_EXPLAIN}</p>
+
+	<!-- IF S_ERROR -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{ERROR_MSG}</p>
+		</div>
+	<!-- ENDIF -->
+	
+	<!-- IF S_USER_IN_RSP -->
+	<form id="rsp_username" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_RSP_USERNAME}</legend>
+		<dl>
+			<dt><label for="rsp_username">{L_RSP_USERNAME}:</label></dt>
+			<dd><input class="text medium" type="text" id="rsp_username" name="rsp_username" value="{U_RSP_USERNAME}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="rsp_land">{L_RSP_LAND}</label></dt>
+			<dd><label><input type="radio" id="rsp_land" name="rsp_land" value="FRT" <!-- IF U_RSP_USER_LAND_FRT -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_LAND_FRT}</label>
+				<label><input type="radio" name="rsp_land" value="USR" <!-- IF U_RSP_USER_LAND_USR -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_LAND_USR}</label>
+				<label><input type="radio" name="rsp_land" value="VRB" <!-- IF U_RSP_USER_LAND_VRB -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_LAND_VRB}</label>
+			</dd>
+		</dl>
+
+	<p class="quick">
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</fieldset>
+	</form>
+	<!-- ENDIF -->
+	
+	<form id="" method="post" action="{U_ACTION}">
+	<fieldset>
+		<legend>{L_SELECT_USER}</legend>
+	<dl>
+		<dt><label>Status: {TEST}</label></dt>
+		<!-- IF S_USER_IN_RSP -->
+		<dd>Benutzer IST RSP-Spieler</dd>
+		<dd class="full" style="text-align: left;"><label><input type="checkbox" class="radio" id="delete_rsp_user" name="delete_rsp_user" value="delete_rsp_user" /> {L_DELETE_RSP_USER}</label></dd>
+		<!-- ENDIF -->
+		<!-- IF S_USER_NOT_IN_RSP -->
+		<dd>Benutzer ist KEIN RSP-Spieler</dd><br />
+		<dt><label for="rsp_username">{L_RSP_USERNAME}:</label></dt>
+		<dd><input class="text medium" type="text" id="rsp_username" name="rsp_username" value="{U_RSP_USERNAME}" /></dd><br />
+		<dt><label for="rsp_land">{L_RSP_LAND}</label></dt>
+		<dd><label><input type="radio" id="rsp_land" name="rsp_land" value="FRT" class="radio" /> {L_RSP_LAND_FRT}</label>
+			<label><input type="radio" name="rsp_land" value="USR" class="radio" /> {L_RSP_LAND_USR}</label>
+			<label><input type="radio" name="rsp_land" value="VRB" class="radio" /> {L_RSP_LAND_VRB}</label>
+		</dd>
+		<dd class="full" style="text-align: left;"><label><input type="checkbox" class="radio" id="create_rsp_user" name="create_rsp_user" value="create_rsp_user" /> {L_CREATE_RSP_USER}</label></dd>
+		<!-- ENDIF -->
+	</dl>
+
+	<p class="quick">
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</fieldset>
+	</form>
+
+<!-- ENDIF -->
+
+<!-- IF S_RSP_USER_RANK -->
+
+	<h1>{L_USER_ADMIN} :: {MANAGED_USERNAME}</h1>
+
+	<p>{L_USER_ADMIN_EXPLAIN}</p>
+	
+	<form id="create_rsp_user_rank" method="post" action="{U_ACTION}">
+
+	<fieldset>
+		<legend>{L_RSP_USER_RANK}</legend>
+		
+		<dl><dt>{L_AKTUELLER_RANK}</dt>
+			<dd><img src="{U_RSP_USER_RANK_BILD}" title="Bild" alt="Rang"/></dd>
+		</dl>
+		<dl>
+			<dt><label for="rsp_rang">{L_RSP_RANG}</label></dt>
+			<dd><select id="rsp_rang" name="rsp_rang">
+				<!-- BEGIN user_rang -->
+				<option value="{user_rang.ID}" {user_rang.OPTION}>{user_rang.NAME}</option>
+				<!-- END user_rang -->
+				</select></dd>
+		</dl>
+		<dl>
+			<dt><label for="rsp_land">{L_RSP_AMT}</label></dt>
+			<dd><label><input type="radio" id="rsp_amt" name="rsp_amt" value="NON" <!-- IF U_RSP_USER_AMT_NON -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_BEREICH_NON}</label>
+				<label><input type="radio" name="rsp_amt" value="GOV" <!-- IF U_RSP_USER_AMT_GOV -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_BEREICH_GOV}</label>
+				<label><input type="radio" name="rsp_amt" value="PRA" <!-- IF U_RSP_USER_AMT_PRA -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_BEREICH_PRA}</label>
+				<label><input type="radio" name="rsp_amt" value="SEK" <!-- IF U_RSP_USER_AMT_SEK -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_BEREICH_SEK}</label>
+				<label><input type="radio" name="rsp_amt" value="MIN" <!-- IF U_RSP_USER_AMT_MIN -->checked="checked"<!-- ENDIF --> class="radio" /> {L_RSP_BEREICH_MIN}</label>
+			</dd>
+		</dl>
+
+	<p class="quick">
+		<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+	</p>
+	</fieldset>
+
+	</form>
+	
+	
+<!-- ENDIF -->
+
+<!-- INCLUDE overall_footer.html -->
