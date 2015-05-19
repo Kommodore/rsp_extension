@@ -91,8 +91,8 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 						'id'				=> array('UINT', NULL, 'auto_increment'),
 						'name'				=> array('VCHAR:255', ''),
 						'gueterbereich'		=> array('UINT:10', 0),
-						'produktion_id'		=> array('UINT:10', 0),
-						'max_stufen'		=> array('SINT:5', 0),
+						'produktion_id'		=> array('UINT:10', NULL),
+						'max_stufen'		=> array('UINT:5', 0),
 					),
 					'PRIMARY_KEY'	=> 'id',
 				),
@@ -207,7 +207,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 					'COLUMNS' => array(
 						'id'			=> array('UINT:10', NULL, 'auto_increment'),
 						'uberschrift'	=> array('VCHAR:255', ''),
-						'text'			=> array('TEXT'),
+						'text'			=> array('TEXT', ''),
 					),
 					'PRIMARY_KEY'	=> 'id',
 				),
@@ -236,7 +236,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 						'story_id'			=> array('UINT:10', 0),
 						'part'				=> array('UINT:10', 0),
 						'uberschrift'		=> array('VCHAR:255', ''),
-						'text'				=> array('TEXT'),
+						'text'				=> array('TEXT', ''),
 					),
 					'PRIMARY_KEY'	=> 'id',
 				),
@@ -257,7 +257,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 						'name'				=> array('VCHAR:255', ''),
 						'logo_url'			=> array('VCHAR:255', ''),
 						'gueterbereich'		=> array('UINT:10', 0),
-						'anzahl_betriebe'	=> array('USINT:5', 0),
+						'anzahl_betriebe'	=> array('UINT:5', 0),
 					),
 					'PRIMARY_KEY'	=> 'id',
 				),
@@ -268,7 +268,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 						'betrieb_id'			=> array('UINT:10', 0),
 						'provinz_id'			=> array('UINT:10', 0),
 						'aktuelle_produktion'	=> array('UINT:10', 0),
-						'anzahl_produktion'		=> array('USINTUSINT:5', 0),
+						'anzahl_produktion'		=> array('UINT:5', 0),
 					),
 					'PRIMARY_KEY'	=> 'id',
 				),
@@ -318,7 +318,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 			array('custom', array(array($this, 'insert_rsp_story_actions'))),
 			array('custom', array(array($this, 'insert_rsp_story_options'))),
 			array('custom', array(array($this, 'insert_rsp_story_part'))),
-
+			
 			/*
 			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_GAMES_INDEX')),
 			array('module.add', array(
