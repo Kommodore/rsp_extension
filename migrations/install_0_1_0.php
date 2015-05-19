@@ -25,33 +25,6 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 		return array('\phpbb\db\migration\data\v310\dev');
 	}
 
-	public function update_data()
-	{
-		return array(
-			// Set the current version
-			array('config.add', array('rsp_version', $this->rsp_version)),
-			// All config
-
-			/*
-			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_GAMES_INDEX')),
-			array('module.add', array(
-				'acp', 'ACP_GAMES_INDEX', array(
-					'module_basename'	=> '\tacitus89\gamesmod\acp\gamesmod_module',
-					'modes'				=> array('config', 'management'),
-				),
-			)),
-			//Set UCP-Module
-			array('module.add', array('ucp', false, 'UCP_GAMES_INDEX')),
-			array('module.add', array(
-				'ucp', 'UCP_GAMES_INDEX', array(
-					'module_basename'	=> '\tacitus89\gamesmod\ucp\gamesmod_module',
-					'modes'				=> array('index', 'add'),
-				),
-			)),
-			*/
-		);
-	}
-
 	public function update_schema()
 	{
 		return array(
@@ -327,6 +300,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
+			array('config.add', array('rsp_version', $this->rsp_version)),
 			array('custom', array(array($this, 'insert_rsp_betriebe'))),
 			array('custom', array(array($this, 'insert_rsp_betriebe_kosten'))),
 			array('custom', array(array($this, 'insert_rsp_betriebe_rohstoffe'))),
@@ -344,6 +318,24 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 			array('custom', array(array($this, 'insert_rsp_story_actions'))),
 			array('custom', array(array($this, 'insert_rsp_story_options'))),
 			array('custom', array(array($this, 'insert_rsp_story_part'))),
+
+			/*
+			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_GAMES_INDEX')),
+			array('module.add', array(
+				'acp', 'ACP_GAMES_INDEX', array(
+					'module_basename'	=> '\tacitus89\gamesmod\acp\gamesmod_module',
+					'modes'				=> array('config', 'management'),
+				),
+			)),
+			//Set UCP-Module
+			array('module.add', array('ucp', false, 'UCP_GAMES_INDEX')),
+			array('module.add', array(
+				'ucp', 'UCP_GAMES_INDEX', array(
+					'module_basename'	=> '\tacitus89\gamesmod\ucp\gamesmod_module',
+					'modes'				=> array('index', 'add'),
+				),
+			)),
+			*/
 		);
 	}
 
