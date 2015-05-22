@@ -1,10 +1,9 @@
 <?php
 
 /**
+* @package RSP Extension for phpBB3.1
 *
-* @package Games Mod for phpBB3.1
 * @copyright (c) 2015 Marco Candian (tacitus@strategie-zone.de)
-* @copyright (c) 2009-2011 Martin Eddy (mods@mecom.com.au)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -318,7 +317,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 			array('custom', array(array($this, 'insert_rsp_story_actions'))),
 			array('custom', array(array($this, 'insert_rsp_story_options'))),
 			array('custom', array(array($this, 'insert_rsp_story_part'))),
-			
+
 			/*
 			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_GAMES_INDEX')),
 			array('module.add', array(
