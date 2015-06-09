@@ -13,7 +13,7 @@ namespace tacitus89\gamesmod\entity;
 /**
 * Abstract Entity for all Entities
 */
-abstract class AbstractEntity
+abstract class abstractEntity
 {
 	/**
 	* Data for this entity

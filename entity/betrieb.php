@@ -12,7 +12,7 @@ namespace tacitus89\rsp_extension\entity;
 /**
 * Entity for a single betrieb
 */
-class Betrieb extends AbstractEntity
+class betrieb extends abstractEntity
 {
 	/**
 	* All of fields of this objects
