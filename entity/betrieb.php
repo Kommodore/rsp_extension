@@ -56,6 +56,19 @@ class betrieb extends abstractEntity
 	}
 
 	/**
+	* Generated a new Object
+	*
+	* @param \phpbb\db\driver\driver_interface    $db              Database object
+	* @param string                               $games_cat_table Name of the table used to store betrieb data
+	* @return \tacitus89\rsp_extension\entity\betrieb
+	* @access protected
+	*/
+	protected static function factory($db, $betrieb_table)
+	{
+		return new self($db, $betrieb_table);
+	}
+
+	/**
 	* Load the data from the database for this betrieb
 	*
 	* @param int $id betrieb identifier
