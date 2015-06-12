@@ -78,7 +78,7 @@ class betrieb extends abstractEntity
 	*/
 	public function load($id)
 	{
-		$sql = 'SELECT b.id, b.gebaude_id, b.stufe, b.wert, b.bild_url
+		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'b')) .'
 			FROM ' . $this->db_table . ' b
 			WHERE '. $this->db->sql_in_set('b.id', $id);
 		$result = $this->db->sql_query($sql);
@@ -102,7 +102,7 @@ class betrieb extends abstractEntity
 	*/
 	public function getGebaudeId()
 	{
-        return getInteger($this->data['gebaude_id']);
+        return $this->getInteger($this->data['gebaude_id']);
 	}
 
     /**
@@ -113,7 +113,7 @@ class betrieb extends abstractEntity
 	*/
 	public function getStufe()
 	{
-		return getInteger($this->data['stufe']);
+		return $this->getInteger($this->data['stufe']);
 	}
 
     /**
@@ -124,7 +124,7 @@ class betrieb extends abstractEntity
 	*/
 	public function getWert()
 	{
-		return getInteger($this->data['wert']);
+		return $this->getInteger($this->data['wert']);
 	}
 
 	/**
@@ -135,6 +135,6 @@ class betrieb extends abstractEntity
 	*/
 	public function get_bild()
 	{
-		return getString($this->data['bild_url']);
+		return $this->getString($this->data['bild_url']);
 	}
 }
