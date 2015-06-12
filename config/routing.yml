@@ -1,0 +1,3 @@
+tacitus89_rsp_main_controller:
+    pattern: /rsp/
+    defaults: { _controller: tacitus89.rsp.main.controller:display }

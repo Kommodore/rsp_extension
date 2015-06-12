@@ -8,7 +8,7 @@
 *
 */
 
-namespace tacitus89\rsp_extension;
+namespace tacitus89\rsp;
 
 class ext extends \phpbb\extension\base
 {

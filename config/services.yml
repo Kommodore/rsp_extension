@@ -1,0 +1,16 @@
+imports:
+    - { resource: tables.yml }
+
+services:
+    tacitus89.rsp.main.controller:
+        class: tacitus89\rsp\controller\main_controller
+        arguments:
+            - @config
+            - @controller.helper
+            - @pagination
+            - @request
+            - @template
+            - @user
+            - @service_container
+            - %core.root_path%
+            - %core.php_ext%

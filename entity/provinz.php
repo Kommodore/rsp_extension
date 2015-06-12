@@ -7,7 +7,7 @@
 *
 */
 
-namespace tacitus89\rsp_extension\entity;
+namespace tacitus89\rsp\entity;
 
 /**
 * Entity for a single provinz

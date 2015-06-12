@@ -8,7 +8,7 @@
 *
 */
 
-namespace tacitus89\rsp_extension\migrations;
+namespace tacitus89\rsp\migrations;
 
 class install_0_1_0 extends \phpbb\db\migration\migration
 {
