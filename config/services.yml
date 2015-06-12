@@ -35,6 +35,7 @@ services:
             - @service_container
             - @dbal.conn
             - %tacitus89.rsp.tables.ressourcen%
+            - %tacitus89.rsp.tables.ressourcen_bereich%
 
     tacitus89.rsp.entity.ressource:
         class: tacitus89\rsp\entity\ressource
@@ -42,3 +43,4 @@ services:
         arguments:
             - @dbal.conn
             - %tacitus89.rsp.tables.ressourcen%
+            - %tacitus89.rsp.tables.ressourcen_bereich%

@@ -52,11 +52,35 @@ class ressourcen
 	* @return array Array of game data entities
 	* @access public
 	*/
-	public function get_ressourcen($bereich_id)
+	public function get_ressourcen_by_bereich($bereich_id)
 	{
 		$sql= 'SELECT '. \tacitus89\rsp\entity\ressource::get_sql_fields(array('this' => 'r')) .'
 			FROM ' . $this->ressourcen_table . ' r
 			WHERE ' . $this->db->sql_in_set('r.bereich_id', $bereich_id) .'
+			ORDER BY r.id ASC';
+        $result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$ress[] = $this->container->get('tacitus89.rsp.entity.ressource')
+				->import($row);
+		}
+		$this->db->sql_freeresult($result);
+
+		// Return all ressourcen entities
+		return $ress;
+	}
+
+	/**
+	* Get all ressourcen
+	*
+	* @param int $bereich_id
+	* @return array Array of game data entities
+	* @access public
+	*/
+	public function get_all_ressourcen()
+	{
+		$sql= 'SELECT '. \tacitus89\rsp\entity\ressource::get_sql_fields(array('this' => 'r')) .'
+			FROM ' . $this->ressourcen_table . ' r
 			ORDER BY r.id ASC';
         $result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))

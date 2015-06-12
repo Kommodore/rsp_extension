@@ -58,9 +58,9 @@ class land extends abstractEntity
 	* @return \tacitus89\rsp_extension\entity\betrieb
 	* @access protected
 	*/
-	protected static function factory($db, $betrieb_table)
+	protected static function factory($db, $land_table)
 	{
-		return new self($db, $betrieb_table);
+		return new self($db, $land_table);
 	}
 
 	/**

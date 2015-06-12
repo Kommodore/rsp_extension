@@ -87,15 +87,16 @@ class main_controller
 	public function display()
 	{
 
-		// Grab all the games
-		$ress = $this->ress_operator->get_ressourcen(1);
+		// Grab all the ress
+		$all_ress = $this->ress_operator->get_all_ressourcen();
 
-		// Process each game entity for display
-		foreach ($ress as $entity)
+		// Process each ress entity for display
+		foreach ($all_ress as $ress)
 		{
+
 			// Set output block vars for display in the template
-			$this->template->assign_block_vars('ress_1_block', array(
-				'NAME'			=> $entity->get_name(),
+			$this->template->assign_block_vars('ress_'. $ress->get_bereich_id() .'_block', array(
+				'NAME'			=> $ress->get_name(),
 			));
 		}
 

@@ -10,9 +10,9 @@
 namespace tacitus89\rsp\entity;
 
 /**
-* Entity for a single provinz
+* Entity for a single ressource
 */
-class provinz extends abstractEntity
+class ressourcen_bereich extends abstractEntity
 {
 	/**
 	* All of fields of this objects
@@ -20,9 +20,7 @@ class provinz extends abstractEntity
 	**/
 	protected static $fields = array(
 		'id'                        => 'integer',
-		'name'                  	=> 'string',
-		'hstadt'					=> 'string',
-		'land'                 		=> 'integer',
+		'name'                		=> 'string',
 	);
 
 	/**
@@ -35,56 +33,55 @@ class provinz extends abstractEntity
 	**/
 	protected static $validate_unsigned = array(
 		'id',
-		'land',
 	);
 
 	/**
 	* Constructor
 	*
 	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $provinz_table   Name of the table used to store provinz data
-	* @return \tacitus89\rsp_extension\entity\provinz
+	* @param string                               $ressource_table   Name of the table used to store ressource data
+	* @return \tacitus89\rsp_extension\entity\ressource
 	* @access public
 	*/
-	public function __construct(\phpbb\db\driver\driver_interface $db, $provinz_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, $ressourcen_bereich_table)
 	{
 		$this->db = $db;
-		$this->db_table = $provinz_table;
+		$this->db_table = $ressourcen_bereich_table;
 	}
 
 	/**
 	* Generated a new Object
 	*
 	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $provinz_table   Name of the table used to store betrieb data
+	* @param string                               $games_cat_table Name of the table used to store betrieb data
 	* @return \tacitus89\rsp_extension\entity\betrieb
 	* @access protected
 	*/
-	protected static function factory($db, $provinz_table)
+	protected static function factory($db, $ressourcen_bereich_table)
 	{
-		return new self($db, $provinz_table);
+		return new self($db, $ressourcen_bereich_table);
 	}
 
 	/**
-	* Load the data from the database for this provinz
+	* Load the data from the database for this ressource
 	*
-	* @param int $id provinz identifier
-	* @return provinz_interface $this object for chaining calls; load()->set()->save()
+	* @param int $id ressource identifier
+	* @return ressource_interface $this object for chaining calls; load()->set()->save()
 	* @access public
 	* @throws \tacitus89\rsp_extension\exception\out_of_bounds
 	*/
 	public function load($id)
 	{
-		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'p')) .'
-			FROM ' . $this->provinz_table . ' p
-			WHERE '. $this->db->sql_in_set('p.id', $id);
+		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'rb')) .'
+			FROM ' . $this->$ressourcen_bereich_table . ' rb
+			WHERE '. $this->db->sql_in_set('rb.id', $id);
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
 		if ($this->data === false)
 		{
-			// A provinz does not exist
+			// A ressource does not exist
 			throw new \tacitus89\rsp_extension\exception\out_of_bounds('id');
 		}
 
@@ -100,27 +97,5 @@ class provinz extends abstractEntity
 	public function get_name()
 	{
 		return $this->getString($this->data['name']);
-	}
-
-	/**
-	* Get kurz_name
-	*
-	* @return string kurz_name
-	* @access public
-	*/
-	public function get_hstadt()
-	{
-		return $this->getString($this->data['hstadt']);
-	}
-
-	/**
-	* Get land
-	*
-	* @return int land identifier
-	* @access public
-	*/
-	public function get_land()
-	{
-		return $this->getInteger($this->data['land']);
 	}
 }

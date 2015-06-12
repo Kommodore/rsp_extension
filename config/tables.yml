@@ -1,2 +1,3 @@
 parameters:
     tacitus89.rsp.tables.ressourcen: %core.table_prefix%rsp_ressourcen
+    tacitus89.rsp.tables.ressourcen_bereich: %core.table_prefix%rsp_ressourcen_bereich

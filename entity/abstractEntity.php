@@ -276,7 +276,7 @@ abstract class abstractEntity
 	* @return int game identifier
 	* @access public
 	*/
-	public function getId()
+	public function get_id()
 	{
 		return (isset($this->data['id'])) ? (int) $this->data['id'] : 0;
 	}

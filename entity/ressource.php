@@ -60,9 +60,9 @@ class ressource extends abstractEntity
 	* @return \tacitus89\rsp_extension\entity\betrieb
 	* @access protected
 	*/
-	protected static function factory($db, $betrieb_table)
+	protected static function factory($db, $ressource_table)
 	{
-		return new self($db, $betrieb_table);
+		return new self($db, $ressource_table);
 	}
 
 	/**
