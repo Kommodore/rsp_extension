@@ -1,0 +1,63 @@
+<link href="{ROOT_PATH}js/css/custom-theme/jquery-ui-1.10.0.custom.css" rel="stylesheet">
+<script src="{ROOT_PATH}js/jquery-ui-1.10.0.custom.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+	var panels = new Array('ress_bereich_1', 'ress_bereich_2', 'ress_bereich_3', 'ress_bereich_4', 'ress_bereich_5');
+	var show_panel = 'ress_bereich_1';
+// ]]>
+</script>
+
+<h2>{L_RSP}</h2>
+<div id="tabs">
+	<ul>
+		<li id="ress_bereich_1-tab" class="activetab"><a href="#tabs" onclick="subPanels('ress_bereich_1'); return false;"><span>{L_RESS_BEREICH_1}</span></a></li>
+		<li id="ress_bereich_2-tab"><a href="#tabs" onclick="subPanels('ress_bereich_2'); return false;"><span>{L_RESS_BEREICH_2}</span></a></li>
+		<li id="ress_bereich_3-tab"><a href="#tabs" onclick="subPanels('ress_bereich_3'); return false;"><span>{L_RESS_BEREICH_3}</span></a></li>
+		<li id="ress_bereich_4-tab"><a href="#tabs" onclick="subPanels('ress_bereich_4'); return false;"><span>{L_RESS_BEREICH_4}</span></a></li>
+		<li id="ress_bereich_5-tab"><a href="#tabs" onclick="subPanels('ress_bereich_5'); return false;"><span>{L_RESS_BEREICH_5}</span></a></li>
+	</ul>
+</div>
+
+<div class="panel">
+		<div class="corners-left"><div class="corners-right"><div class="inner"><span class="corners-top"><span></span></span>
+	<h3>{L_RSP_RESSOURCEN}</h3>
+
+<div id="ress_bereich_1">
+	<!-- BEGIN ress_1_block -->
+	<div style="float:left;width: 9%;text-align:center;font-size:12px;"><img src="{ress_1_block.RESS_URL}" width="60" height="27" /><br /> {ress_1_block.RESS_NAME}<br />{ress_1_block.MENGE}</div>
+
+	<!-- END ress_1_block -->
+</div>
+<div id="ress_bereich_2">
+	<!-- BEGIN ress_2_block -->
+	<div style="float:left;width: 9%;text-align:center;font-size:12px;"><img src="{ress_2_block.RESS_URL}" width="60" height="27" /><br />{ress_2_block.RESS_NAME}<br />{ress_2_block.MENGE}</div>
+
+	<!-- END ress_2_block -->
+</div>
+<div id="ress_bereich_3">
+	<!-- BEGIN ress_3_block -->
+	<div style="float:left;width: 10%;text-align:center;font-size:12px;"><img src="{ress_3_block.RESS_URL}" width="60" height="27" /><br />{ress_3_block.RESS_NAME}<br />{ress_3_block.MENGE}</div>
+
+	<!-- END ress_3_block -->
+</div>
+<div id="ress_bereich_4">
+	<!-- BEGIN ress_4_block -->
+	<div style="float:left;width: 20%;text-align:center;font-size:12px;"><img src="{ress_4_block.RESS_URL}" width="60" height="27" /><br />{ress_4_block.RESS_NAME}<br />{ress_4_block.MENGE}</div>
+
+	<!-- END ress_4_block -->
+</div>
+<div id="ress_bereich_5">
+	<!-- BEGIN ress_5_block -->
+	<div style="float:left;width: 16%;text-align:center;font-size:12px;"><img src="{ress_5_block.RESS_URL}" width="60" height="27" /><br />{ress_5_block.RESS_NAME}<br />{ress_5_block.MENGE}</div>
+
+	<!-- END ress_5_block -->
+</div>
+	<br style="clear:both;" /><br/>
+		<span class="corners-bottom"><span></span></span></div></div></div>
+</div>
+
+<script type="text/javascript">
+// <![CDATA[
+	subPanels(show_panel);
+// ]]>
+</script>

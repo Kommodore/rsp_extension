@@ -1,0 +1,200 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- INCLUDE rsp_overall.html -->
+
+<div class="panel">
+		<div class="corners-left"><div class="corners-right"><div class="inner"><span class="corners-top"><span></span></span>
+<link href="{ROOT_PATH}js/jquery-jvectormap.css" media="screen" rel="stylesheet" type="text/css" />
+<script src="{ROOT_PATH}js/jquery-jvectormap.min.js"></script>
+<script src="{ROOT_PATH}js/jquery.map.rsp.js" type="text/javascript"></script>
+<script type="text/javascript">
+		jQuery(document).ready(function() {
+$.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_data){
+			var map = new jvm.WorldMap({
+				container: $('#rsp-map'),
+				map: 'rsp',
+				backgroundColor: '#a5bfdd',
+				focusOn:
+				{
+					x: 0,
+					y: 0,
+					scale: 0,
+				},
+				markers: [
+					{
+						coords: [636, 198],
+						name: 'Hauptstadt 1',
+					},
+					{
+						coords: [986, 680],
+						name: 'Hauptstadt 2',
+					},
+					{
+						coords: [365, 472],
+						name: 'Hauptstadt 3',
+					},
+				],
+				markerStyle:
+				{
+					initial: {
+						fill: '#F8E23B',
+						"fill-opacity": 0.75,
+						stroke: '#000000',
+						"stroke-width": 1,
+						"stroke-opacity": 1,
+						r: 10
+					},
+					hover: {
+						"fill-opacity": 1,
+						stroke: '#000000',
+						"stroke-width": 2,
+						r: 12
+					},
+				},
+				regionStyle:
+				{
+					initial: {
+						fill: '#ffffff',
+						"fill-opacity": 1,
+						stroke: '#ffffff',
+						"stroke-width": 2,
+						"stroke-opacity": 1,
+					},
+					hover: {
+						"fill-opacity": 0.8
+					},
+					selected: {
+						fill: '#9b9b9b'
+					},
+					selectedHover: {
+					}
+				},
+				series: {
+					regions:[{
+						values:	rsp_data.provinzListe,
+						scale: {
+							"VRB":"#7d2e29",
+							"USR":"#37532b",
+							"FRT":"#1e1f19",
+							"NEU":"#635846",
+							"AUS":"#cccccc",
+						}
+					}]
+				},
+				onRegionLabelShow: function(e, el, code){
+				    el.html('Provinz: '+el.html()+'<br />Hauptstadt: '+ rsp_data.provinzInfo[code]['hstadt']+'<br />Erz: '+rsp_data.provinzInfo[code]['Erz']['aktuell']+'/'+rsp_data.provinzInfo[code]['Erz']['aktuell']+'<br />Edelmetall: '+rsp_data.provinzInfo[code]['Edelmetall']['aktuell']+'/'+rsp_data.provinzInfo[code]['Edelmetall']['aktuell']+'<br />Roh\u00f6l: '+rsp_data.provinzInfo[code]['Roh\u00f6l']['aktuell']+'/'+rsp_data.provinzInfo[code]['Roh\u00f6l']['aktuell']+'<br />Kohle: '+rsp_data.provinzInfo[code]['Kohle']['aktuell']+'/'+rsp_data.provinzInfo[code]['Kohle']['aktuell']+'<br />Erdgas: '+rsp_data.provinzInfo[code]['Erdgas']['aktuell']+'/'+rsp_data.provinzInfo[code]['Erdgas']['aktuell']+'<br />Seltene Erden: '+rsp_data.provinzInfo[code]['Seltene Erden']['aktuell']+'/'+rsp_data.provinzInfo[code]['Seltene Erden']['aktuell']+'<br />Trinkwasser: '+rsp_data.provinzInfo[code]['Trinkwasser']['aktuell']+'/'+rsp_data.provinzInfo[code]['Trinkwasser']['aktuell']+'<br />Holz: '+rsp_data.provinzInfo[code]['Holz']['aktuell']+'/'+rsp_data.provinzInfo[code]['Holz']['aktuell']+'<br />Zement: '+rsp_data.provinzInfo[code]['Zement']['aktuell']+'/'+rsp_data.provinzInfo[code]['Zement']['aktuell']+'<br />Landwirtschaft: '+rsp_data.provinzInfo[code]['Landwirtschaft']['aktuell']+'/'+rsp_data.provinzInfo[code]['Landwirtschaft']['aktuell']);
+				  },
+				onRegionClick: function(event, code){
+					location.href = "{ROOT_PATH}rsp.php?mode=provinz&i=" + code;
+				},
+				onMarkerClick: function(event, code){
+					switch(code){
+						case "0":
+							map.setFocus('2');
+							break;
+						case "1":
+							map.setFocus('6');
+							break;
+						case "2":
+							map.setFocus('13');
+							break;
+					}
+				},
+			});
+});
+		});
+	</script>
+	<div class="content">
+	<h2>{L_MAP}:</h2>
+
+		<div id="rsp-map" style="width: 600px; height: 410px;"></div>
+
+	</div>
+		<span class="corners-bottom"><span></span></span></div></div></div>
+</div>
+
+<div class="panel">
+		<div class="corners-left"><div class="corners-right"><div class="inner"><span class="corners-top"><span></span></span>
+
+	<div class="content">
+
+<!-- IF S_UNTERNEHMEN -->
+	<h2><a href="http://www.strategie-zone.de/rsp/rsp.php?mode=unternehmen">{L_YOUR_UNTERNEHMEN}:</a></h2>
+	<fieldset>
+		<dl>
+			<dt>{L_RSP_UNTERNEHMEN} ({L_ANZAHL_UNTERNEHMEN} / {L_MAX_UNTERNEHMEN})</dt>
+			<dd>{L_RSP_BETRIEB}</dd>
+		<!-- BEGIN unternehmen_block -->
+		</dl><dl>
+			<a href="{unternehmen_block.UNTERNEHMEN_URL}" name="{unternehmen_block.NAME}">{unternehmen_block.UNTERNEHMEN_NAME}</a>
+			{unternehmen_block.BETRIEBLISTE}
+		<!-- END unternehmen_block -->
+		</dl>
+	</fieldset>
+<!-- ENDIF -->
+	</div>
+
+		<span class="corners-bottom"><span></span></span></div></div></div>
+</div>
+
+
+<div class="panel">
+		<div class="corners-left"><div class="corners-right"><div class="inner"><span class="corners-top"><span></span></span>
+
+	<div class="content">
+
+<!-- IF S_UNTERNEHMEN -->
+	<h2>{L_LANDER}:</h2>
+	<fieldset>
+		<dl>
+			<dt>{L_LAND}</dt>
+			<dd>{L_PROVINZ}</dd>
+		<!-- BEGIN land_block -->
+		</dl><dl>
+			<dt><a href="{land_block.PROVINZ_URL}" name="{land_block.LAND_NAME}">{land_block.PROVINZ_NAME}</a></dt>
+		<!-- END land_block -->
+		</dl>
+	<fieldset>
+<!-- ENDIF -->
+	</div>
+
+		<span class="corners-bottom"><span></span></span></div></div></div>
+</div>
+
+<h2><a href="http://www.strategie-zone.de/rsp/rsp.php?mode=handel">Zum Handel</a></h2>
+
+<div class="forumbg forumbg-table">
+	<div class="inner"><span class="corners-top"><span></span></span><div class="corners-left"><div class="corners-right">
+
+	<table class="table1" cellspacing="1">
+		<thead>
+		<tr>
+			<th>{L_RSP_LOG_NAME_SENDER}</th>
+			<th>{L_RSP_LOG_NAME_EMPFAENGER}</th>
+			<th>{L_RSP_LOG_ZWECK}</th>
+			<th>{L_RSP_LOG_RESSOURCE}</th>
+			<th>{L_RSP_LOG_MENGE}</th>
+			<th>{L_RSP_LOG_TIME}</th>
+			<th>{L_RSP_LOG_STATUS}</th>
+		</tr>
+		</thead>
+	<tbody>
+		<!-- BEGIN handel_block -->
+		<tr class="bg1">
+			<td>{handel_block.SENDER}</td>
+			<td>{handel_block.EMPFAENGER}</td>
+			<td>{handel_block.ZWECK}</td>
+			<td>{handel_block.RESS}</td>
+			<td>{handel_block.MENGE}</td>
+			<td>{handel_block.ZEIT}</td>
+			<td>{handel_block.STATUS}</td>
+		</tr>
+		<!-- END handel_block -->
+	</tbody>
+	</table>
+
+	</div></div><span class="corners-bottom"><span></span></span></div>
+</div>
+
+<!-- INCLUDE jumpbox.html -->
+<!-- INCLUDE overall_footer.html -->

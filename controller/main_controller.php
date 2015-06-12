@@ -83,4 +83,8 @@ class main_controller
 	*/
 	public function display()
 	{
+
+		// Send all data to the template file
+		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
     }
+}
