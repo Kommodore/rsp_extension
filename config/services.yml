@@ -2,6 +2,19 @@ imports:
     - { resource: tables.yml }
 
 services:
+    tacitus89.rsp.listener:
+        class: tacitus89\rsp\event\listener
+        arguments:
+            - @config
+            - @controller.helper
+            - @request
+            - @template
+            - @user
+            - %core.root_path%
+            - %core.php_ext%
+        tags:
+            - { name: event.listener }
+
     tacitus89.rsp.main.controller:
         class: tacitus89\rsp\controller\main_controller
         arguments:
@@ -12,5 +25,20 @@ services:
             - @template
             - @user
             - @service_container
+            - @tacitus89.rsp.operator.ressourcen
             - %core.root_path%
             - %core.php_ext%
+
+    tacitus89.rsp.operator.ressourcen:
+        class: tacitus89\rsp\operators\ressourcen
+        arguments:
+            - @service_container
+            - @dbal.conn
+            - %tacitus89.rsp.tables.ressourcen%
+
+    tacitus89.rsp.entity.ressource:
+        class: tacitus89\rsp\entity\ressource
+        scope: prototype # scope MUST be prototype for this to work!
+        arguments:
+            - @dbal.conn
+            - %tacitus89.rsp.tables.ressourcen%

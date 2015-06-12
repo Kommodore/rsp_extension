@@ -1,9 +1,8 @@
 <?php
 /**
+* @package RSP Extension for phpBB3.1
 *
-* @package Games Mod for phpBB3.1
 * @copyright (c) 2015 Marco Candian (tacitus@strategie-zone.de)
-* @copyright (c) 2009-2011 Martin Eddy (mods@mecom.com.au)
 * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 *
 */
@@ -38,6 +37,9 @@ class main_controller
 	/** @var ContainerInterface */
 	protected $container;
 
+	/** @var \tacitus89\rsp\operators\ressourcen */
+	protected $ress_operator;
+
 	/** @var string phpBB root path */
 	protected $root_path;
 
@@ -62,7 +64,7 @@ class main_controller
 	* @return \tacitus89\rsp_extension\controller\admin_controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, ContainerInterface $container, $root_path, $php_ext)
+	public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, ContainerInterface $container, \tacitus89\rsp\operators\ressourcen $ress_operator, $root_path, $php_ext)
 	{
 		$this->config = $config;
 		$this->helper = $helper;
@@ -71,6 +73,7 @@ class main_controller
 		$this->template = $template;
 		$this->user = $user;
 		$this->container = $container;
+		$this->ress_operator = $ress_operator;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 	}
@@ -83,6 +86,18 @@ class main_controller
 	*/
 	public function display()
 	{
+
+		// Grab all the games
+		$ress = $this->ress_operator->get_ressourcen(1);
+
+		// Process each game entity for display
+		foreach ($ress as $entity)
+		{
+			// Set output block vars for display in the template
+			$this->template->assign_block_vars('ress_1_block', array(
+				'NAME'			=> $entity->get_name(),
+			));
+		}
 
 		// Send all data to the template file
 		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
