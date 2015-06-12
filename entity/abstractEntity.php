@@ -8,7 +8,7 @@
 *
 */
 
-namespace tacitus89\gamesmod\entity;
+namespace tacitus89\rsp_extension\entity;
 
 /**
 * Abstract Entity for all Entities
