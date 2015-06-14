@@ -88,15 +88,16 @@ class main_controller
 	{
 
 		// Grab all the ress
-		$all_ress = $this->ress_operator->get_all_ressourcen();
+		$all_user_ress = $this->ress_operator->get_all_user_ress($this->user->data['user_id']);
 
 		// Process each ress entity for display
-		foreach ($all_ress as $ress)
+		foreach ($all_user_ress as $user_ress)
 		{
 
 			// Set output block vars for display in the template
-			$this->template->assign_block_vars('ress_'. $ress->get_bereich_id() .'_block', array(
-				'NAME'			=> $ress->get_name(),
+			$this->template->assign_block_vars('ress_'. $user_ress->get_ress()->get_bereich_id() .'_block', array(
+				'NAME'			=> $user_ress->get_ress()->get_name(),
+				'MENGE'			=> $user_ress->get_menge(),
 			));
 		}
 
