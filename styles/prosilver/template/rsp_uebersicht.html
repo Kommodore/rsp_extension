@@ -117,7 +117,7 @@ $.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_dat
 
 	<div class="content">
 
-<!-- IF S_UNTERNEHMEN -->
+<!-- IF .unternehmen_block -->
 	<h2><a href="http://www.strategie-zone.de/rsp/rsp.php?mode=unternehmen">{L_YOUR_UNTERNEHMEN}:</a></h2>
 	<fieldset>
 		<dl>
@@ -125,7 +125,7 @@ $.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_dat
 			<dd>{L_RSP_BETRIEB}</dd>
 		<!-- BEGIN unternehmen_block -->
 		</dl><dl>
-			<a href="{unternehmen_block.UNTERNEHMEN_URL}" name="{unternehmen_block.NAME}">{unternehmen_block.UNTERNEHMEN_NAME}</a>
+			<a href="{unternehmen_block.UNTERNEHMEN_URL}" name="{unternehmen_block.NAME}">{unternehmen_block.NAME}</a>
 			{unternehmen_block.BETRIEBLISTE}
 		<!-- END unternehmen_block -->
 		</dl>

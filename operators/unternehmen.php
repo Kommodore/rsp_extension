@@ -87,4 +87,32 @@ class unternehmen
 		// Return all ressourcen entities
 		return $unternehmen;
 	}
+
+	/**
+	* Get the betriebe of a unternehmen
+	*
+	* @param int $unternehmen_id
+	* @return array Array of unternehmen_betriebe data entities
+	* @access public
+	*/
+	public function get_all_betriebe_of_unternehmen($unternehmen_id)
+	{
+		$betriebe = array();
+
+		$sql= 'SELECT '. \tacitus89\rsp\entity\unternehmen_betrieb::get_sql_fields(array('this' => 'ub', 'betrieb_id' => 'b')) .'
+			FROM ' . $this->unternehmen_betriebe_table . ' ub
+			LEFT JOIN '. $this->betriebe_table .' b ON ub.betrieb_id = b.id
+			WHERE ' . $this->db->sql_in_set('ub.unternehmen_id', $unternehmen_id) .'
+			ORDER BY ub.id ASC';
+        $result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$betriebe[] = $this->container->get('tacitus89.rsp.entity.unternehmen_betrieb')
+				->import($row);
+		}
+		$this->db->sql_freeresult($result);
+
+		// Return all ressourcen entities
+		return $betriebe;
+	}
 }

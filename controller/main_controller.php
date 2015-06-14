@@ -116,16 +116,28 @@ class main_controller
 	*/
 	public function display_user_unternehmen($user_id)
 	{
-		// Grab all the ress
+		// Grab all the unternehmen
 		$all_unternehmen = $this->unternehmen_operator->get_all_user_unternehmen($user_id);
 
-		// Process each ress entity for display
+		// Process each unternehmen entity for display
 		foreach ($all_unternehmen as $unternehmen)
 		{
+			// Grab all the unternehmen_betriebe
+			$unternehmen_betriebe = $this->unternehmen_operator->get_all_betriebe_of_unternehmen($unternehmen->get_id());
+
+			$betriebliste = '';
+
+			// Process each unternehmen_betriebe entity for display
+			foreach ($unternehmen_betriebe as $betrieb)
+			{
+				$betriebliste .= $betrieb->get_betrieb()->get_bild();
+			}
 
 			// Set output block vars for display in the template
 			$this->template->assign_block_vars('unternehmen_block', array(
+				'ID'			=> $unternehmen->get_id(),
 				'NAME'			=> $unternehmen->get_name(),
+				'BETRIEBLISTE'	=> $betriebliste,
 			));
 		}
     }
