@@ -49,6 +49,9 @@ class main_controller
 	/** @var string Custom form action */
 	protected $u_action;
 
+	/** @var string Path to ext dir */
+	protected $dir;
+
 	/**
 	* Constructor
 	*
@@ -76,6 +79,14 @@ class main_controller
 		$this->ress_operator = $ress_operator;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
+
+		if($this->config['enable_mod_rewrite'])
+		{
+			$this->dir = $this->root_path.'ext/tacitus89/rsp/';
+		}
+		else {
+			$this->dir = $this->root_path.'../ext/tacitus89/rsp/';
+		}
 	}
 
     /**
@@ -86,6 +97,7 @@ class main_controller
 	*/
 	public function display()
 	{
+		echo $this->root_path;
 
 		// Grab all the ress
 		$all_user_ress = $this->ress_operator->get_all_user_ress($this->user->data['user_id']);
@@ -98,6 +110,7 @@ class main_controller
 			$this->template->assign_block_vars('ress_'. $user_ress->get_ress()->get_bereich_id() .'_block', array(
 				'NAME'			=> $user_ress->get_ress()->get_name(),
 				'MENGE'			=> $user_ress->get_menge(),
+				'IMAGE'			=> $this->dir.$user_ress->get_ress()->get_url(),
 			));
 		}
 

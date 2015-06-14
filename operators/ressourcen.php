@@ -113,7 +113,8 @@ class ressourcen
 		$sql= 'SELECT '. \tacitus89\rsp\entity\user_ress::get_sql_fields(array('this' => 'ur', 'ress_id' => 'r')) .'
 			FROM ' . $this->user_ress_table . ' ur
 			LEFT JOIN '. $this->ressourcen_table .' r ON r.id = ur.ress_id
-			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id);
+			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id) .'
+			ORDER BY r.id';
         $result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
