@@ -153,9 +153,9 @@ class user_ress extends abstractEntity
 		$user_id = (integer) $user_id;
 
 		// If the data is less than 0, it's not unsigned and we'll throw an exception
-		if ($parent < 0)
+		if ($user_id < 0)
 		{
-			throw new \tacitus89\gamesmod\exception\out_of_bounds($parent);
+			throw new \tacitus89\gamesmod\exception\out_of_bounds('user_id');
 		}
 
 		//Generated new games_cat object
