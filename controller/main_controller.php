@@ -82,14 +82,14 @@ class main_controller
 
 		if($this->config['enable_mod_rewrite'])
 		{
-			$this->dir = $this->root_path.'ext/tacitus89/rsp/';
+			$this->dir = $this->root_path.'../ext/tacitus89/rsp/';
 		}
 		else {
-			$this->dir = $this->root_path.'../ext/tacitus89/rsp/';
+			$this->dir = $this->root_path.'../../ext/tacitus89/rsp/';
 		}
 	}
 
-    /**
+	/**
 	* Display
 	*
 	* @return null
@@ -97,8 +97,20 @@ class main_controller
 	*/
 	public function display()
 	{
-		echo $this->root_path;
+		$this->display_user_ress();
 
+		// Send all data to the template file
+		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
+    }
+
+    /**
+	* Display user ress
+	*
+	* @return null
+	* @access public
+	*/
+	public function display_user_ress()
+	{
 		// Grab all the ress
 		$all_user_ress = $this->ress_operator->get_all_user_ress($this->user->data['user_id']);
 
@@ -113,8 +125,5 @@ class main_controller
 				'IMAGE'			=> $this->dir.$user_ress->get_ress()->get_url(),
 			));
 		}
-
-		// Send all data to the template file
-		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
     }
 }
