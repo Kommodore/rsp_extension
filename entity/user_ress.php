@@ -12,7 +12,7 @@ namespace tacitus89\rsp\entity;
 /**
 * Entity for a single ressource
 */
-class ressource extends abstractEntity
+class user_ress extends abstractEntity
 {
 	/**
 	* All of fields of this objects
@@ -30,7 +30,7 @@ class ressource extends abstractEntity
 	**/
 	protected static $subClasses = array(
 		'ress_id'					=> array('name' => 'ressource',
-											 'param' => array('db', 'ressourcen_table')),)
+											 'param' => array('db', 'ressourcen_table')),
 	);
 
 	/**
@@ -39,11 +39,15 @@ class ressource extends abstractEntity
 	protected static $validate_unsigned = array(
 		'id',
 		'user_id',
-		'ress_id',
 		'menge',
 	);
 
-	$ressourcen_table
+	/**
+	* The database table the ressourcen are stored in
+	*
+	* @var string
+	*/
+	protected $ressourcen_table;
 
 	/**
 	* Constructor
@@ -76,7 +80,7 @@ class ressource extends abstractEntity
 	/**
 	* Load the data from the database for this ressource
 	*
-	* @param int $id ressource identifier
+	* @param int $user_id user identifier
 	* @return ressource_interface $this object for chaining calls; load()->set()->save()
 	* @access public
 	* @throws \tacitus89\rsp\exception\out_of_bounds
@@ -85,8 +89,8 @@ class ressource extends abstractEntity
 	{
 		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'ur', 'ress_id' => 'r')) .'
 			FROM ' . $this->db_table . ' ur
-			LEFT JOIN '. $this->ressourcen_table .' r
-			WHERE '. $this->db->sql_in_set('ur.id', $id);
+			LEFT JOIN '. $this->ressourcen_table .' r ON r.id = ur.ress_id
+			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id);
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
@@ -94,7 +98,7 @@ class ressource extends abstractEntity
 		if ($this->data === false)
 		{
 			// A ressource does not exist
-			throw new \tacitus89\rsp_extension\exception\out_of_bounds('id');
+			throw new \tacitus89\rsp_extension\exception\out_of_bounds('user_id');
 		}
 
 		return $this;
@@ -182,7 +186,7 @@ class ressource extends abstractEntity
 	* @access public
 	* @throws \tacitus89\rsp\exception\unexpected_value
 	*/
-	public function set_user_id($menge)
+	public function set_menge($menge)
 	{
 		return $this->setInteger('menge', $menge);
 	}
