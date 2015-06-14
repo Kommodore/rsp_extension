@@ -60,4 +60,31 @@ class unternehmen
 		$this->unternehmen_betriebe_table = $unternehmen_betriebe_table;
 		$this->betriebe_table = $betriebe_table;
 	}
+
+	/**
+	* Get the unternehmen of a user
+	*
+	* @param int $user_id
+	* @return array Array of unternehmen data entities
+	* @access public
+	*/
+	public function get_all_user_unternehmen($user_id)
+	{
+		$unternehmen = array();
+
+		$sql= 'SELECT '. \tacitus89\rsp\entity\unternehmen::get_sql_fields(array('this' => 'u')) .'
+			FROM ' . $this->unternehmen_table . ' u
+			WHERE ' . $this->db->sql_in_set('u.user_id', $user_id) .'
+			ORDER BY u.id ASC';
+        $result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$unternehmen[] = $this->container->get('tacitus89.rsp.entity.unternehmen')
+				->import($row);
+		}
+		$this->db->sql_freeresult($result);
+
+		// Return all ressourcen entities
+		return $unternehmen;
+	}
 }

@@ -40,6 +40,9 @@ class main_controller
 	/** @var \tacitus89\rsp\operators\ressourcen */
 	protected $ress_operator;
 
+	/** @var \tacitus89\rsp\operators\unternehmen */
+	protected $unternehmen_operator;
+
 	/** @var string phpBB root path */
 	protected $root_path;
 
@@ -67,7 +70,7 @@ class main_controller
 	* @return \tacitus89\rsp_extension\controller\admin_controller
 	* @access public
 	*/
-	public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, ContainerInterface $container, \tacitus89\rsp\operators\ressourcen $ress_operator, $root_path, $php_ext)
+	public function __construct(\phpbb\config\config $config, \phpbb\controller\helper $helper, \phpbb\pagination $pagination, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, ContainerInterface $container, \tacitus89\rsp\operators\ressourcen $ress_operator, \tacitus89\rsp\operators\unternehmen $unternehmen_operator, $root_path, $php_ext)
 	{
 		$this->config = $config;
 		$this->helper = $helper;
@@ -77,6 +80,7 @@ class main_controller
 		$this->user = $user;
 		$this->container = $container;
 		$this->ress_operator = $ress_operator;
+		$this->unternehmen_operator = $unternehmen_operator;
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 
@@ -98,9 +102,32 @@ class main_controller
 	public function display()
 	{
 		$this->display_user_ress();
+		$this->display_user_unternehmen($this->user->data['user_id']);
 
 		// Send all data to the template file
 		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
+    }
+
+	/**
+	* Display user unternehmen
+	*
+	* @return null
+	* @access public
+	*/
+	public function display_user_unternehmen($user_id)
+	{
+		// Grab all the ress
+		$all_unternehmen = $this->unternehmen_operator->get_all_user_unternehmen($user_id);
+
+		// Process each ress entity for display
+		foreach ($all_unternehmen as $unternehmen)
+		{
+
+			// Set output block vars for display in the template
+			$this->template->assign_block_vars('unternehmen_block', array(
+				'NAME'			=> $unternehmen->get_name(),
+			));
+		}
     }
 
     /**

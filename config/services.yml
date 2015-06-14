@@ -26,6 +26,7 @@ services:
             - @user
             - @service_container
             - @tacitus89.rsp.operator.ressourcen
+            - @tacitus89.rsp.operator.unternehmen
             - %core.root_path%
             - %core.php_ext%
 

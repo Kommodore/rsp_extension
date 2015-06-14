@@ -79,9 +79,9 @@ class unternehmen extends abstractEntity
 	*/
 	public function load($id)
 	{
-		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'g')) .'
-			FROM ' . $this->db_table . ' g
-			WHERE '. $this->db->sql_in_set('g.id', $id);
+		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'u')) .'
+			FROM ' . $this->db_table . ' u
+			WHERE '. $this->db->sql_in_set('u.id', $id);
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
