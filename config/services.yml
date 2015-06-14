@@ -44,6 +44,13 @@ services:
             - @dbal.conn
             - %tacitus89.rsp.tables.ressourcen%
 
+    tacitus89.rsp.entity.unternehmen:
+        class: tacitus89\rsp\entity\unternehmen
+        scope: prototype # scope MUST be prototype for this to work!
+        arguments:
+            - @dbal.conn
+            - %tacitus89.rsp.tables.unternehmen%
+
     tacitus89.rsp.entity.user_ress:
         class: tacitus89\rsp\entity\user_ress
         scope: prototype # scope MUST be prototype for this to work!
