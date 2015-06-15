@@ -23,34 +23,26 @@ class ressourcen
 	protected $db;
 
 	/**
-	* The database table the ressourcen for user are stored in
+	* The prefix of database table
 	*
 	* @var string
 	*/
-	protected $user_ress_table;
-
-	/**
-	* The database table the ressourcen are stored in
-	*
-	* @var string
-	*/
-	protected $ressourcen_table;
+	protected $db_prefix;
 
 	/**
 	* Constructor
 	*
 	* @param ContainerInterface $container		Service container interface
 	* @param phpbb\db\driver\driver_interface 	$db
-	* @param string							 	$game_table
-	* @return \tacitus89\gamesmod\operators\game
+	* @param string							 	$db_prefix
+	* @return \tacitus89\rsp\operators\game
 	* @access public
 	*/
-	public function __construct(ContainerInterface $container, \phpbb\db\driver\driver_interface $db, $user_ress_table,  $ressourcen_table)
+	public function __construct(ContainerInterface $container, \phpbb\db\driver\driver_interface $db, $db_prefix)
 	{
 		$this->container = $container;
 		$this->db = $db;
-		$this->user_ress_table = $user_ress_table;
-		$this->ressourcen_table = $ressourcen_table;
+		$this->db_prefix = $db_prefix;
 	}
 
 	/**
@@ -62,8 +54,7 @@ class ressourcen
 	*/
 	public function get_ressourcen_by_bereich($bereich_id)
 	{
-		$sql= 'SELECT '. \tacitus89\rsp\entity\ressource::get_sql_fields(array('this' => 'r')) .'
-			FROM ' . $this->ressourcen_table . ' r
+		$sql= \tacitus89\rsp\entity\ressource::get_sql_select($this->db_prefix) .'
 			WHERE ' . $this->db->sql_in_set('r.bereich_id', $bereich_id) .'
 			ORDER BY r.id ASC';
         $result = $this->db->sql_query($sql);
@@ -86,8 +77,7 @@ class ressourcen
 	*/
 	public function get_all_ressourcen()
 	{
-		$sql= 'SELECT '. \tacitus89\rsp\entity\ressource::get_sql_fields(array('this' => 'r')) .'
-			FROM ' . $this->ressourcen_table . ' r
+		$sql=  \tacitus89\rsp\entity\ressource::get_sql_select($this->db_prefix) .'
 			ORDER BY r.id ASC';
         $result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))
@@ -110,9 +100,7 @@ class ressourcen
 	*/
 	public function get_all_user_ress($user_id)
 	{
-		$sql= 'SELECT '. \tacitus89\rsp\entity\user_ress::get_sql_fields(array('this' => 'ur', 'ress_id' => 'r')) .'
-			FROM ' . $this->user_ress_table . ' ur
-			LEFT JOIN '. $this->ressourcen_table .' r ON r.id = ur.ress_id
+		$sql=  \tacitus89\rsp\entity\user_ress::get_sql_select($this->db_prefix) .'
 			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id) .'
 			ORDER BY r.id';
         $result = $this->db->sql_query($sql);

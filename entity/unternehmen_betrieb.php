@@ -31,8 +31,7 @@ class unternehmen_betrieb extends abstractEntity
 	* All object must be assigned to a class
 	**/
 	protected static $subClasses = array(
-		'betrieb_id'			=> array('name' => 'betrieb',
-										 'param' => array('db', 'betriebe_table')),
+		'betrieb_id'			=> 'betrieb',
 	);
 
 	/**
@@ -47,38 +46,35 @@ class unternehmen_betrieb extends abstractEntity
 	);
 
 	/**
-	* The database table the betriebe are stored in
-	*
-	* @var string
-	*/
-	protected $betriebe_table;
-
-	/**
 	* Constructor
 	*
 	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $gebaude_table   Name of the table used to store gebaude data
+	* @param string                               $db_prefix	   The prefix of database table
 	* @return \tacitus89\rsp_extension\entity\gebaude
 	* @access public
 	*/
-	public function __construct(\phpbb\db\driver\driver_interface $db, $unternehmen_betriebe_table, $betriebe_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, $db_prefix)
 	{
 		$this->db = $db;
-		$this->db_table = $unternehmen_betriebe_table;
-		$this->betriebe_table = $betriebe_table;
+		$this->db_prefix = $db_prefix;
 	}
 
 	/**
-	* Generated a new Object
+	* Generated the beginning SQL-Select Part
+	* WHERE and Order missing
 	*
-	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $games_cat_table Name of the table used to store betrieb data
-	* @return \tacitus89\rsp_extension\entity\betrieb
-	* @access protected
+	* @param string  $db_prefix	   The prefix of database table
+	* @return string The beginning sql select
+	* @access public
 	*/
-	protected static function factory($db, $unternehmen_betriebe_table, $betriebe_table)
+	public static function get_sql_select($db_prefix)
 	{
-		return new self($db, $unternehmen_betriebe_table, $betriebe_table);
+		$sql = 'SELECT '. static::get_sql_fields(array('unternehmen_betrieb' => 'ub', 'betrieb' => 'b', 'gebaude' => 'g')) .'
+				FROM '. $db_prefix.\tacitus89\rsp\tables::$table['unternehmen_betriebe'] .' ub
+				LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['betriebe'] .' b ON ub.betrieb_id = b.id
+				LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['gebaude'] .' g ON b.gebaude_id = g.id';
+
+		return $sql;
 	}
 
 	/**
@@ -91,9 +87,7 @@ class unternehmen_betrieb extends abstractEntity
 	*/
 	public function load($id)
 	{
-		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'ub', 'betrieb_id' => 'b')) .'
-			FROM ' . $this->db_table . ' ub
-			LEFT JOIN '. $this->betriebe_table .' b ON ub.betrieb_id = b.id
+		$sql = static::get_sql_select($this->db_prefix).'
 			WHERE '. $this->db->sql_in_set('ub.id', $id);
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);

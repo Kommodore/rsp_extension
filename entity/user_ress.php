@@ -29,8 +29,7 @@ class user_ress extends abstractEntity
 	* All object must be assigned to a class
 	**/
 	protected static $subClasses = array(
-		'ress_id'					=> array('name' => 'ressource',
-											 'param' => array('db', 'ressourcen_table')),
+		'ress_id'					=> 'ressource',
 	);
 
 	/**
@@ -43,38 +42,34 @@ class user_ress extends abstractEntity
 	);
 
 	/**
-	* The database table the ressourcen are stored in
-	*
-	* @var string
-	*/
-	protected $ressourcen_table;
-
-	/**
 	* Constructor
 	*
 	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $ressource_table   Name of the table used to store ressource data
+	* @param string                               $db_prefix 	   The prefix of database table
 	* @return \tacitus89\rsp_extension\entity\ressource
 	* @access public
 	*/
-	public function __construct(\phpbb\db\driver\driver_interface $db, $user_ress_table, $ressourcen_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, $db_prefix)
 	{
 		$this->db = $db;
-		$this->db_table = $user_ress_table;
-		$this->ressourcen_table = $ressourcen_table;
+		$this->db_prefix = $db_prefix;
 	}
 
 	/**
-	* Generated a new Object
+	* Generated the beginning SQL-Select Part
+	* WHERE and Order missing
 	*
-	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $games_cat_table Name of the table used to store betrieb data
-	* @return \tacitus89\rsp_extension\entity\betrieb
-	* @access protected
+	* @param string  $db_prefix	   The prefix of database table
+	* @return string The beginning sql select
+	* @access public
 	*/
-	protected static function factory($db, $user_ress_table, $ressource_table)
+	public static function get_sql_select($db_prefix)
 	{
-		return new self($db, $user_ress_table, $ressource_table);
+		$sql = 'SELECT '. static::get_sql_fields(array('user_ress' => 'ur', 'ressource' => 'r')) .'
+			FROM ' . $db_prefix.\tacitus89\rsp\tables::$table['user_ress'] . ' ur
+			LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['ressourcen'] .' r ON r.id = ur.ress_id';
+
+		return $sql;
 	}
 
 	/**
@@ -87,9 +82,7 @@ class user_ress extends abstractEntity
 	*/
 	public function load($id)
 	{
-		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'ur', 'ress_id' => 'r')) .'
-			FROM ' . $this->db_table . ' ur
-			LEFT JOIN '. $this->ressourcen_table .' r ON r.id = ur.ress_id
+		$sql = static::get_sql_select($this->db_prefix).'
 			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id);
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);

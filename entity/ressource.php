@@ -42,27 +42,30 @@ class ressource extends abstractEntity
 	* Constructor
 	*
 	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $ressource_table   Name of the table used to store ressource data
+	* @param string                               $db_prefix	   The prefix of database table
 	* @return \tacitus89\rsp_extension\entity\ressource
 	* @access public
 	*/
-	public function __construct(\phpbb\db\driver\driver_interface $db, $ressource_table)
+	public function __construct(\phpbb\db\driver\driver_interface $db, $db_prefix)
 	{
 		$this->db = $db;
-		$this->db_table = $ressource_table;
+		$this->db_prefix = $db_prefix;
 	}
 
 	/**
-	* Generated a new Object
+	* Generated the beginning SQL-Select Part
+	* WHERE and Order missing
 	*
-	* @param \phpbb\db\driver\driver_interface    $db              Database object
-	* @param string                               $games_cat_table Name of the table used to store betrieb data
-	* @return \tacitus89\rsp_extension\entity\betrieb
-	* @access protected
+	* @param string  $db_prefix	   The prefix of database table
+	* @return string The beginning sql select
+	* @access public
 	*/
-	protected static function factory($db, $ressource_table)
+	public static function get_sql_select($db_prefix)
 	{
-		return new self($db, $ressource_table);
+		$sql = 'SELECT '. static::get_sql_fields(array('ressource' => 'r')) .'
+			FROM ' . $db_prefix.\tacitus89\rsp\tables::$table['ressourcen'] . ' r';
+
+		return $sql;
 	}
 
 	/**
@@ -75,8 +78,7 @@ class ressource extends abstractEntity
 	*/
 	public function load($id)
 	{
-		$sql = 'SELECT '. static::get_sql_fields(array('this' => 'r')) .'
-			FROM ' . $this->ressource_table . ' r
+		$sql = static::get_sql_select($this->db_prefix).'
 			WHERE '. $this->db->sql_in_set('r.id', $id);
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);

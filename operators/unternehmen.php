@@ -23,25 +23,11 @@ class unternehmen
 	protected $db;
 
 	/**
-	* The database table the unternehmen for user are stored in
+	* The prefix of database table
 	*
 	* @var string
 	*/
-	protected $unternehmen_table;
-
-	/**
-	* The database table the unternehmen_betriebe are stored in
-	*
-	* @var string
-	*/
-	protected $unternehmen_betriebe_table;
-
-	/**
-	* The database table the betriebe are stored in
-	*
-	* @var string
-	*/
-	protected $betriebe_table;
+	protected $db_prefix;
 
 	/**
 	* Constructor
@@ -52,13 +38,11 @@ class unternehmen
 	* @return \tacitus89\gamesmod\operators\game
 	* @access public
 	*/
-	public function __construct(ContainerInterface $container, \phpbb\db\driver\driver_interface $db, $unternehmen_table,  $unternehmen_betriebe_table, $betriebe_table)
+	public function __construct(ContainerInterface $container, \phpbb\db\driver\driver_interface $db, $db_prefix)
 	{
 		$this->container = $container;
 		$this->db = $db;
-		$this->unternehmen_table = $unternehmen_table;
-		$this->unternehmen_betriebe_table = $unternehmen_betriebe_table;
-		$this->betriebe_table = $betriebe_table;
+		$this->db_prefix = $db_prefix;
 	}
 
 	/**
@@ -72,8 +56,7 @@ class unternehmen
 	{
 		$unternehmen = array();
 
-		$sql= 'SELECT '. \tacitus89\rsp\entity\unternehmen::get_sql_fields(array('this' => 'u')) .'
-			FROM ' . $this->unternehmen_table . ' u
+		$sql= \tacitus89\rsp\entity\unternehmen::get_sql_select($this->db_prefix) .'
 			WHERE ' . $this->db->sql_in_set('u.user_id', $user_id) .'
 			ORDER BY u.id ASC';
         $result = $this->db->sql_query($sql);
@@ -99,9 +82,7 @@ class unternehmen
 	{
 		$betriebe = array();
 
-		$sql= 'SELECT '. \tacitus89\rsp\entity\unternehmen_betrieb::get_sql_fields(array('this' => 'ub', 'betrieb_id' => 'b')) .'
-			FROM ' . $this->unternehmen_betriebe_table . ' ub
-			LEFT JOIN '. $this->betriebe_table .' b ON ub.betrieb_id = b.id
+		$sql= \tacitus89\rsp\entity\unternehmen_betrieb::get_sql_select($this->db_prefix) .'
 			WHERE ' . $this->db->sql_in_set('ub.unternehmen_id', $unternehmen_id) .'
 			ORDER BY ub.id ASC';
         $result = $this->db->sql_query($sql);

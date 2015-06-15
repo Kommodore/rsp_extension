@@ -1,7 +1,0 @@
-parameters:
-    tacitus89.rsp.tables.betriebe: %core.table_prefix%rsp_betriebe
-    tacitus89.rsp.tables.ressourcen: %core.table_prefix%rsp_ressourcen
-    tacitus89.rsp.tables.ressourcen_bereich: %core.table_prefix%rsp_ressourcen_bereich
-    tacitus89.rsp.tables.unternehmen: %core.table_prefix%rsp_unternehmen
-    tacitus89.rsp.tables.unternehmen_betriebe: %core.table_prefix%rsp_unternehmen_betriebe
-    tacitus89.rsp.tables.user_ress: %core.table_prefix%rsp_user_ress

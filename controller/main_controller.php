@@ -130,7 +130,7 @@ class main_controller
 			// Process each unternehmen_betriebe entity for display
 			foreach ($unternehmen_betriebe as $betrieb)
 			{
-				$betriebliste .= $betrieb->get_betrieb()->get_bild();
+				$betriebliste .= $betrieb->get_betrieb()->get_gebaude()->get_name();
 			}
 
 			// Set output block vars for display in the template

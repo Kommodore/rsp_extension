@@ -24,11 +24,11 @@ abstract class abstractEntity
 	protected $db;
 
 	/**
-	* The database table the data of this entity are stored in
+	* The prefix of database table
 	*
 	* @var string
 	*/
-	protected $db_table;
+	protected $db_prefix;
 
 	/**
 	* All of fields of this objects
@@ -48,12 +48,11 @@ abstract class abstractEntity
 
 	/**
 	* Generated from entity attribute the sql column
-	* Only for entity in entity and not for entity in entity in entity...
 	*
 	* @param array $table_prefix declare the prefix of tables
 	* @return string The finished sql column
 	* @access public
-	* @throws \tacitus89\gamesmod\exception\out_of_bounds
+	* @throws \tacitus89\rsp\exception\out_of_bounds
 	*/
 	public static function get_sql_fields($table_prefix = array())
 	{
@@ -65,7 +64,6 @@ abstract class abstractEntity
 
 		//get the called class
 		$called_class = substr(get_called_class(), strrpos(get_called_class(), '\\')+1);
-
 		if(!empty($table_prefix))
 		{
 			//Go through all fields and renamed it
@@ -75,12 +73,18 @@ abstract class abstractEntity
 				if($value === 'object')
 				{
 					//get class of object
-					$class = __NAMESPACE__. '\\' .static::$subClasses[$key]['name'];
+					$class = __NAMESPACE__. '\\' .static::$subClasses[$key];
+
+					if(!isset($table_prefix[$called_class]))
+					{
+						//if object have subobject, it must be set a table_prefix
+						throw new \tacitus89\rsp\exception\invalid_argument(array($key, 'FIELD_MISSING'));
+					}
+
 					//get the fields of the object
-					$new_fields[] = $class::get_sql_fields(array('this' => $table_prefix[$key]));
+					$new_fields[] = $class::get_sql_fields($table_prefix);
 				}
-				//set renamed fields
-				$new_fields[] = $table_prefix['this'] .'.'. $key .' AS '. $called_class .'_'. $key;
+				$new_fields[] = $table_prefix[$called_class] .'.'. $key .' AS '. $called_class .'_'. $key;
 			}
 		}
 		else
@@ -91,7 +95,7 @@ abstract class abstractEntity
 				if($value === 'object')
 				{
 					//if object have subobject, it must be set a table_prefix
-					throw new \tacitus89\gamesmod\exception\invalid_argument(array($key, 'FIELD_MISSING'));
+					throw new \tacitus89\rsp\exception\invalid_argument(array($key, 'FIELD_MISSING'));
 				}
 				$new_fields[] = $key .' AS '. $called_class .'_'. $key;
 			}
@@ -106,7 +110,7 @@ abstract class abstractEntity
 	* @param int $id game identifier
 	* @return game_interface $this object for chaining calls; load()->set()->save()
 	* @access public
-	* @throws \tacitus89\gamesmod\exception\out_of_bounds
+	* @throws \tacitus89\rsp\exception\out_of_bounds
 	*/
 	abstract public function load($id);
 
@@ -120,7 +124,7 @@ abstract class abstractEntity
 	* @param array $data Data array, typically from the database
 	* @return game_interface $this object for chaining calls; load()->set()->save()
 	* @access public
-	* @throws \tacitus89\gamesmod\exception\base
+	* @throws \tacitus89\rsp\exception\base
 	*/
 	public function import($data)
 	{
@@ -136,7 +140,7 @@ abstract class abstractEntity
 			// If the data wasn't sent to us, throw an exception
 			if (!isset($data[$class.$field]))
 			{
-				throw new \tacitus89\gamesmod\exception\invalid_argument(array($field, 'FIELD_MISSING'));
+				throw new \tacitus89\rsp\exception\invalid_argument(array($field, 'FIELD_MISSING'));
 			}
 
 			// If the type is a method on this class, call it
@@ -148,16 +152,10 @@ abstract class abstractEntity
 			elseif($type === 'object')
 			{
 				//Get subclass
-				$subclass = __NAMESPACE__. '\\' .static::$subClasses[$field]['name'];
-
-				//declare the param from var subClasses
-				$param = array();
-				foreach (static::$subClasses[$field]['param'] as $key => $value) {
-					$param[] = $this->{$value};
-				}
+				$subclass = __NAMESPACE__. '\\' .static::$subClasses[$field];
 
 				//Generating the subclass
-				$this->data[$field] = call_user_func_array($subclass.'::factory', $param);
+				$this->data[$field] = new $subclass($this->db, $this->db_prefix);
 
 				//Import the data to subclass
 				$this->data[$field]->import($data);
@@ -179,7 +177,7 @@ abstract class abstractEntity
 			// If the data is less than 0, it's not unsigned and we'll throw an exception
 			if ($this->data[$field] < 0)
 			{
-				throw new \tacitus89\gamesmod\exception\out_of_bounds($field);
+				throw new \tacitus89\rsp\exception\out_of_bounds($field);
 			}
 		}
 
@@ -193,14 +191,14 @@ abstract class abstractEntity
 	*
 	* @return game_interface $this object for chaining calls; load()->set()->save()
 	* @access public
-	* @throws \tacitus89\gamesmod\exception\out_of_bounds
+	* @throws \tacitus89\rsp\exception\out_of_bounds
 	*/
 	public function insert()
 	{
 		if (!empty($this->data['id']))
 		{
 			// The game already exists
-			throw new \tacitus89\gamesmod\exception\out_of_bounds('id');
+			throw new \tacitus89\rsp\exception\out_of_bounds('id');
 		}
 
 		// Make extra sure there is no id set
@@ -238,14 +236,14 @@ abstract class abstractEntity
 	*
 	* @return game_interface $this object for chaining calls; load()->set()->save()
 	* @access public
-	* @throws \tacitus89\gamesmod\exception\out_of_bounds
+	* @throws \tacitus89\rsp\exception\out_of_bounds
 	*/
 	public function save()
 	{
 		if (empty($this->data['id']))
 		{
 			// The game does not exist
-			throw new \tacitus89\gamesmod\exception\out_of_bounds('id');
+			throw new \tacitus89\rsp\exception\out_of_bounds('id');
 		}
 
 		//Set the id from the subClasses
@@ -311,7 +309,7 @@ abstract class abstractEntity
 		// We limit the name length to $characters characters
 		if (truncate_string($string, $characters) != $string)
 		{
-			throw new \tacitus89\gamesmod\exception\unexpected_value(array($varname, 'TOO_LONG'));
+			throw new \tacitus89\rsp\exception\unexpected_value(array($varname, 'TOO_LONG'));
 		}
 
 		// Set the name on our data array
@@ -351,7 +349,7 @@ abstract class abstractEntity
 		// If the data is less than 0, it's not unsigned and we'll throw an exception
 		if ($unsigned && $integer < 0)
 		{
-			throw new \tacitus89\gamesmod\exception\out_of_bounds($integer);
+			throw new \tacitus89\rsp\exception\out_of_bounds($integer);
 		}
 
 		// Set the order_id on our data array
