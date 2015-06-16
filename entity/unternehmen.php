@@ -85,14 +85,45 @@ class unternehmen extends abstractEntity
 		$sql = static::get_sql_select($this->db_prefix).'
 			WHERE '. $this->db->sql_in_set('u.id', $id);
 		$result = $this->db->sql_query($sql);
-		$this->data = $this->db->sql_fetchrow($result);
+		$data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if ($this->data === false)
+		if ($data === false)
 		{
 			// A gebaude does not exist
 			throw new \tacitus89\rsp_extension\exception\out_of_bounds('id');
 		}
+
+		//Import data
+		$this->import($data);
+
+		return $this;
+	}
+
+	/**
+	* Load the data from the database for this unternehmen by name
+	*
+	* @param int $id unternehmen identifier
+	* @return gebaude_interface $this object for chaining calls; load()->set()->save()
+	* @access public
+	* @throws \tacitus89\rsp_extension\exception\out_of_bounds
+	*/
+	public function load_by_name($name)
+	{
+		$sql = static::get_sql_select($this->db_prefix).'
+			WHERE '. $this->db->sql_in_set('u.name', $name);
+		$result = $this->db->sql_query($sql);
+		$data = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);
+
+		if ($data === false)
+		{
+			// A gebaude does not exist
+			throw new \tacitus89\rsp_extension\exception\out_of_bounds('id');
+		}
+
+		//Import data
+		$this->import($data);
 
 		return $this;
 	}

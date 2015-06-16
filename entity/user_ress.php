@@ -85,14 +85,17 @@ class user_ress extends abstractEntity
 		$sql = static::get_sql_select($this->db_prefix).'
 			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id);
 		$result = $this->db->sql_query($sql);
-		$this->data = $this->db->sql_fetchrow($result);
+		$data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if ($this->data === false)
+		if ($data === false)
 		{
-			// A ressource does not exist
-			throw new \tacitus89\rsp_extension\exception\out_of_bounds('user_id');
+			// A gebaude does not exist
+			throw new \tacitus89\rsp_extension\exception\out_of_bounds('id');
 		}
+
+		//Import data
+		$this->import($data);
 
 		return $this;
 	}

@@ -84,14 +84,17 @@ class gebaude extends abstractEntity
 		$sql = static::get_sql_select($this->db_prefix).'
 			WHERE '. $this->db->sql_in_set('g.id', $id);
 		$result = $this->db->sql_query($sql);
-		$this->data = $this->db->sql_fetchrow($result);
+		$data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if ($this->data === false)
+		if ($data === false)
 		{
 			// A gebaude does not exist
 			throw new \tacitus89\rsp_extension\exception\out_of_bounds('id');
 		}
+
+		//Import data
+		$this->import($data);
 
 		return $this;
 	}
