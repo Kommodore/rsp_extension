@@ -53,7 +53,7 @@ class main_controller
 	protected $u_action;
 
 	/** @var string Path to ext dir */
-	protected $dir;
+	protected $ext_path;
 
 	/**
 	* Constructor
@@ -84,13 +84,7 @@ class main_controller
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 
-		if($this->config['enable_mod_rewrite'])
-		{
-			$this->dir = $this->root_path.'../ext/tacitus89/rsp/';
-		}
-		else {
-			$this->dir = $this->root_path.'../../ext/tacitus89/rsp/';
-		}
+		$this->ext_path = 'ext/tacitus89/rsp/';
 	}
 
 	/**
@@ -101,6 +95,22 @@ class main_controller
 	*/
 	public function display()
 	{
+		$this->display_user_ress();
+		$this->display_user_unternehmen($this->user->data['user_id']);
+
+		// Send all data to the template file
+		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
+    }
+
+	/**
+	* Display
+	*
+	* @return null
+	* @access public
+	*/
+	public function display_unternehmen($unternehmen = '')
+	{
+		echo $this->root_path;
 		$this->display_user_ress();
 		$this->display_user_unternehmen($this->user->data['user_id']);
 
@@ -163,7 +173,7 @@ class main_controller
 			$this->template->assign_block_vars('ress_'. $user_ress->get_ress()->get_bereich_id() .'_block', array(
 				'NAME'			=> $user_ress->get_ress()->get_name(),
 				'MENGE'			=> $user_ress->get_menge(),
-				'IMAGE'			=> $this->dir.$user_ress->get_ress()->get_url(),
+				'IMAGE'			=> append_sid($this->root_path.$this->ext_path.$user_ress->get_ress()->get_url()),
 			));
 		}
     }
