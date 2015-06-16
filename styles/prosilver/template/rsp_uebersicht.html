@@ -123,12 +123,17 @@ $.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_dat
 		<dl>
 			<dt>{L_RSP_UNTERNEHMEN} ({L_ANZAHL_UNTERNEHMEN} / {L_MAX_UNTERNEHMEN})</dt>
 			<dd>{L_RSP_BETRIEB}</dd>
-		<!-- BEGIN unternehmen_block -->
-		</dl><dl>
-			<a href="{unternehmen_block.UNTERNEHMEN_URL}" name="{unternehmen_block.NAME}">{unternehmen_block.NAME}</a>
-			{unternehmen_block.BETRIEBLISTE}
-		<!-- END unternehmen_block -->
 		</dl>
+		<!-- BEGIN unternehmen_block -->
+		<dl>
+			<dt style="width: 50%"><h3><a href="{unternehmen_block.UNTERNEHMEN_URL}" name="{unternehmen_block.NAME}">{unternehmen_block.NAME}</a></h3></dt>
+			<dd style="margin-left: 51%;margin-top:30px;padding-left:20px;"><ul>
+			<!-- BEGIN unternehmen_block.betriebe -->
+				<li>{unternehmen_block.betriebe.NAME} (Stufe {unternehmen_block.betriebe.STUFE}) in {unternehmen_block.betriebe.PROVINZ_NAME}</li>
+			<!-- END unternehmen_block.betriebe -->
+			</ul></dd>
+		</dl>
+		<!-- END unternehmen_block -->
 	</fieldset>
 <!-- ENDIF -->
 	</div>

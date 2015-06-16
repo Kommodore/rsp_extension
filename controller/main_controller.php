@@ -125,20 +125,22 @@ class main_controller
 			// Grab all the unternehmen_betriebe
 			$unternehmen_betriebe = $this->unternehmen_operator->get_all_betriebe_of_unternehmen($unternehmen->get_id());
 
-			$betriebliste = '';
-
-			// Process each unternehmen_betriebe entity for display
-			foreach ($unternehmen_betriebe as $betrieb)
-			{
-				$betriebliste .= $betrieb->get_betrieb()->get_gebaude()->get_name();
-			}
-
 			// Set output block vars for display in the template
 			$this->template->assign_block_vars('unternehmen_block', array(
 				'ID'			=> $unternehmen->get_id(),
 				'NAME'			=> $unternehmen->get_name(),
-				'BETRIEBLISTE'	=> $betriebliste,
 			));
+
+			// Process each unternehmen_betriebe entity for display
+			foreach ($unternehmen_betriebe as $betrieb)
+			{
+				// Set output block vars for display in the template
+				$this->template->assign_block_vars('unternehmen_block.betriebe', array(
+					'NAME'			=> $betrieb->get_betrieb()->get_gebaude()->get_name(),
+					'STUFE'			=> $betrieb->get_betrieb()->get_stufe(),
+					'PROVINZ_NAME'	=> $betrieb->get_provinz()->get_name(),
+				));
+			}
 		}
     }
 

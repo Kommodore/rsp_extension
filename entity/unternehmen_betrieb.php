@@ -22,7 +22,7 @@ class unternehmen_betrieb extends abstractEntity
 		'id'     				=> 'integer',
 		'unternehmen_id'        => 'integer',
 		'betrieb_id'		    => 'object',
-		'provinz_id'            => 'integer',
+		'provinz_id'            => 'object',
 		'aktuelle_produktion'	=> 'integer',
 		'anzahl_produktion'		=> 'integer',
 	);
@@ -32,6 +32,7 @@ class unternehmen_betrieb extends abstractEntity
 	**/
 	protected static $subClasses = array(
 		'betrieb_id'			=> 'betrieb',
+		'provinz_id'			=> 'provinz',
 	);
 
 	/**
@@ -40,7 +41,6 @@ class unternehmen_betrieb extends abstractEntity
 	protected static $validate_unsigned = array(
 		'id',
 		'unternehmen_id',
-		'provinz_id',
 		'aktuelle_produktion',
 		'anzahl_produktion',
 	);
@@ -69,10 +69,11 @@ class unternehmen_betrieb extends abstractEntity
 	*/
 	public static function get_sql_select($db_prefix)
 	{
-		$sql = 'SELECT '. static::get_sql_fields(array('unternehmen_betrieb' => 'ub', 'betrieb' => 'b', 'gebaude' => 'g')) .'
+		$sql = 'SELECT '. static::get_sql_fields(array('unternehmen_betrieb' => 'ub', 'betrieb' => 'b', 'gebaude' => 'g', 'provinz' => 'p')) .'
 				FROM '. $db_prefix.\tacitus89\rsp\tables::$table['unternehmen_betriebe'] .' ub
 				LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['betriebe'] .' b ON ub.betrieb_id = b.id
-				LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['gebaude'] .' g ON b.gebaude_id = g.id';
+				LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['gebaude'] .' g ON b.gebaude_id = g.id
+				LEFT JOIN '. $db_prefix.\tacitus89\rsp\tables::$table['provinzen'] .' p ON ub.provinz_id = p.id';
 
 		return $sql;
 	}
@@ -157,7 +158,7 @@ class unternehmen_betrieb extends abstractEntity
 		}
 
 		//Generated new games_cat object
-		$this->data['betrieb_id'] = new betrieb($this->db, $this->betriebe_table);
+		$this->data['betrieb_id'] = new betrieb($this->db, $this->db_prefix);
 
 		//Load the data for new parent
 		$this->data['betrieb_id']->load($betrieb_id);
@@ -171,9 +172,9 @@ class unternehmen_betrieb extends abstractEntity
 	* @return int provinz_id
 	* @access public
 	*/
-	public function get_provinz_id()
+	public function get_provinz()
 	{
-		return $this->getInteger($this->data['provinz_id']);
+		return $this->data['provinz_id'];
 	}
 
 	/**
@@ -186,7 +187,22 @@ class unternehmen_betrieb extends abstractEntity
 	*/
 	public function set_provinz_id($provinz_id)
 	{
-		return $this->setInteger('provinz_id', $provinz_id);
+		// Enforce a integer
+		$provinz_id = (integer) $provinz_id;
+
+		// If the data is less than 0, it's not unsigned and we'll throw an exception
+		if ($provinz_id < 0)
+		{
+			throw new \tacitus89\gamesmod\exception\out_of_bounds('provinz_id');
+		}
+
+		//Generated new games_cat object
+		$this->data['provinz_id'] = new provinz($this->db, $this->db_prefix);
+
+		//Load the data for new parent
+		$this->data['provinz_id']->load($provinz_id);
+
+		return $this;
 	}
 
 	/**

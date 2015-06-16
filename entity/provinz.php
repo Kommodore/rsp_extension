@@ -63,7 +63,7 @@ class provinz extends abstractEntity
 	public static function get_sql_select($db_prefix)
 	{
 		$sql = 'SELECT '. static::get_sql_fields(array('provinz' => 'p')) .'
-			FROM ' . $db_prefix.\tacitus89\rsp\tables::$table['provinz'] . ' p';
+			FROM ' . $db_prefix.\tacitus89\rsp\tables::$table['provinzen'] . ' p';
 
 		return $sql;
 	}
