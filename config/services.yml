@@ -48,6 +48,13 @@ services:
             - @dbal.conn
             - %core.table_prefix%
 
+    tacitus89.rsp.entity.betrieb_rohstoff:
+        class: tacitus89\rsp\entity\betrieb_rohstoff
+        scope: prototype # scope MUST be prototype for this to work!
+        arguments:
+            - @dbal.conn
+            - %core.table_prefix%
+
     tacitus89.rsp.entity.gebaude:
         class: tacitus89\rsp\entity\gebaude
         scope: prototype # scope MUST be prototype for this to work!

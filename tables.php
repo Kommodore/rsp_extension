@@ -14,6 +14,7 @@ class tables
 {
     public static $table = array(
         'betriebe'              => 'rsp_betriebe',
+        'betriebe_rohstoffe'    => 'rsp_betriebe_rohstoffe',
         'gebaude'               => 'rsp_gebaude_info',
         'provinzen'             => 'rsp_provinzen',
         'ressourcen'            => 'rsp_ressourcen',
