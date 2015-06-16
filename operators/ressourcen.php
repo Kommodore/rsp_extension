@@ -77,6 +77,8 @@ class ressourcen
 	*/
 	public function get_all_ressourcen()
 	{
+		$ress = array();
+
 		$sql=  \tacitus89\rsp\entity\ressource::get_sql_select($this->db_prefix) .'
 			ORDER BY r.id ASC';
         $result = $this->db->sql_query($sql);
@@ -100,6 +102,8 @@ class ressourcen
 	*/
 	public function get_all_user_ress($user_id)
 	{
+		$ress = array();
+
 		$sql=  \tacitus89\rsp\entity\user_ress::get_sql_select($this->db_prefix) .'
 			WHERE '. $this->db->sql_in_set('ur.user_id', $user_id) .'
 			ORDER BY r.id';
@@ -107,6 +111,32 @@ class ressourcen
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$ress[] = $this->container->get('tacitus89.rsp.entity.user_ress')
+				->import($row);
+		}
+		$this->db->sql_freeresult($result);
+
+		// Return all ressourcen entities
+		return $ress;
+	}
+
+	/**
+	* Get all necessary ressourcen of a gebaude
+	*
+	* @param int $gebaude_id
+	* @return array Array of betrieb_rohstoff data entities
+	* @access public
+	*/
+	public function get_ress_for_betrieb($gebaude_id)
+	{
+		$ress = array();
+
+		$sql=  \tacitus89\rsp\entity\betrieb_rohstoff::get_sql_select($this->db_prefix) .'
+			WHERE '. $this->db->sql_in_set('br.gebaude_id', $gebaude_id) .'
+			ORDER BY r.id';
+        $result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$ress[] = $this->container->get('tacitus89.rsp.entity.betrieb_rohstoff')
 				->import($row);
 		}
 		$this->db->sql_freeresult($result);

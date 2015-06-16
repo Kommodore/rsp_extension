@@ -113,7 +113,7 @@ $.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_dat
 </div>
 
 <div class="panel">
-		<div class="corners-left"><div class="corners-right"><div class="inner"><span class="corners-top"><span></span></span>
+	<div class="inner">
 
 	<div class="content">
 
@@ -126,7 +126,7 @@ $.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_dat
 		</dl>
 		<!-- BEGIN unternehmen_block -->
 		<dl>
-			<dt style="width: 50%"><h3><a href="{unternehmen_block.UNTERNEHMEN_URL}" name="{unternehmen_block.NAME}">{unternehmen_block.NAME}</a></h3></dt>
+			<dt style="width: 50%"><h3><a href="{unternehmen_block.URL}" name="{unternehmen_block.NAME}">{unternehmen_block.NAME}</a></h3></dt>
 			<dd style="margin-left: 51%;margin-top:30px;padding-left:20px;"><ul>
 			<!-- BEGIN unternehmen_block.betriebe -->
 				<li>{unternehmen_block.betriebe.NAME} (Stufe {unternehmen_block.betriebe.STUFE}) in {unternehmen_block.betriebe.PROVINZ_NAME}</li>
@@ -138,7 +138,7 @@ $.getJSON('http://www.strategie-zone.de/rsp/rsp.php?mode=json', function(rsp_dat
 <!-- ENDIF -->
 	</div>
 
-		<span class="corners-bottom"><span></span></span></div></div></div>
+	</div>
 </div>
 
 

@@ -110,16 +110,39 @@ class main_controller
 	*/
 	public function display_unternehmen($unternehmen = '')
 	{
-		echo $this->root_path;
 		$this->display_user_ress();
-		$this->display_user_unternehmen($this->user->data['user_id']);
+
+		//have a name of unternehmen?
+		if($unternehmen != '')
+		{
+			//show all infos for display
+			$this->display_unternehmen_by_name($unternehmen);
+
+			// Set output vars for display in the template
+			$this->template->assign_vars(array(
+				'S_UNTERNEHMEN'			=> false,
+				'S_EIGENES_UNTERNEHMEN'	=> true,
+				'S_BETRIEB'				=> true,
+			));
+		}
+		else
+		{
+			$this->display_user_unternehmen($this->user->data['user_id']);
+
+			// Set output vars for display in the template
+			$this->template->assign_vars(array(
+				'S_UNTERNEHMEN'			=> true,
+				'S_EIGENES_UNTERNEHMEN'	=> false,
+				'S_BETRIEB'				=> false,
+			));
+		}
 
 		// Send all data to the template file
-		return $this->helper->render('rsp_uebersicht.html', $this->user->lang('RSP'));
+		return $this->helper->render('rsp_unternehmen.html', $this->user->lang('RSP'));
     }
 
 	/**
-	* Display user unternehmen
+	* Display all user unternehmen
 	*
 	* @return null
 	* @access public
@@ -139,6 +162,7 @@ class main_controller
 			$this->template->assign_block_vars('unternehmen_block', array(
 				'ID'			=> $unternehmen->get_id(),
 				'NAME'			=> $unternehmen->get_name(),
+				'URL'			=> $this->helper->route('tacitus89_rsp_main_controller_unternehmen', array('unternehmen' => $unternehmen->get_name())),
 			));
 
 			// Process each unternehmen_betriebe entity for display
@@ -151,7 +175,75 @@ class main_controller
 					'PROVINZ_NAME'	=> $betrieb->get_provinz()->get_name(),
 				));
 			}
+
 		}
+
+		//display navlinks of unternehmen
+		$this->template->assign_block_vars('navlinks', array(
+			'U_VIEW_FORUM'		=> $this->helper->route('tacitus89_rsp_main_controller_unternehmen'),
+			'FORUM_NAME'		=> $this->user->lang('UNTERNEHMEN'),
+		));
+    }
+
+	/**
+	* Display one unternehmen by name
+	*
+	* @return null
+	* @access public
+	*/
+	public function display_unternehmen_by_name($unternehmen)
+	{
+		// Grab the unternehmen
+		$unternehmen = $this->container->get('tacitus89.rsp.entity.unternehmen')->load_by_name($unternehmen);
+
+		// Grab all the unternehmen_betriebe
+		$unternehmen_betriebe = $this->unternehmen_operator->get_all_betriebe_of_unternehmen($unternehmen->get_id());
+
+		// Process each unternehmen_betriebe entity for display
+		foreach ($unternehmen_betriebe as $betrieb)
+		{
+			// Set output block vars for display in the template
+			$this->template->assign_block_vars('betrieb_block', array(
+				'ID'			=> $betrieb->get_id(),
+				'NAME'			=> $betrieb->get_betrieb()->get_gebaude()->get_name(),
+				'STUFE'			=> $betrieb->get_betrieb()->get_stufe(),
+				'PROVINZ_NAME'	=> $betrieb->get_provinz()->get_name(),
+			));
+
+			//Get all necessary ress of this betrieb
+			$all_betrieb_ress = $this->ress_operator->get_ress_for_betrieb($betrieb->get_betrieb()->get_gebaude()->get_id());
+
+			// Process each betrieb_ress entity for display
+			foreach ($all_betrieb_ress as $ress)
+			{
+				// Set output block vars for display in the template
+				$this->template->assign_block_vars('betrieb_block.ress', array(
+					'NAME'			=> $ress->get_ressource()->get_name(),
+					'MENGE'			=> $ress->get_menge(),
+				));
+			}
+
+
+		}
+
+		// Set output vars for display in the template
+		$this->template->assign_vars(array(
+			'S_UNTERNEHMEN'			=> false,
+			'S_EIGENES_UNTERNEHMEN'	=> true,
+			'S_BETRIEB'				=> true,
+		));
+
+		//display navlinks of unternehmen
+		$this->template->assign_block_vars('navlinks', array(
+			'U_VIEW_FORUM'		=> $this->helper->route('tacitus89_rsp_main_controller_unternehmen'),
+			'FORUM_NAME'		=> $this->user->lang('UNTERNEHMEN'),
+		));
+
+		//display navlinks for unternehmen
+		$this->template->assign_block_vars('navlinks', array(
+			'U_VIEW_FORUM'		=> $this->helper->route('tacitus89_rsp_main_controller_unternehmen', array('unternehmen' => $unternehmen->get_name())),
+			'FORUM_NAME'		=> $unternehmen->get_name(),
+		));
     }
 
     /**
@@ -176,5 +268,11 @@ class main_controller
 				'IMAGE'			=> append_sid($this->root_path.$this->ext_path.$user_ress->get_ress()->get_url()),
 			));
 		}
+
+		//display navlinks of wisim
+		$this->template->assign_block_vars('navlinks', array(
+			'U_VIEW_FORUM'		=> $this->helper->route('tacitus89_rsp_main_controller'),
+			'FORUM_NAME'		=> $this->user->lang('WISIM'),
+		));
     }
 }
