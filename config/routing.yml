@@ -1,0 +1,7 @@
+tacitus89_rsp_main_controller:
+    pattern: /rsp/wisim
+    defaults: { _controller: tacitus89.rsp.main.controller:display }
+
+tacitus89_rsp_main_controller_unternehmen:
+    pattern: /rsp/wisim/unternehmen/{unternehmen}
+    defaults: { _controller: tacitus89.rsp.main.controller:display_unternehmen, unternehmen: null }

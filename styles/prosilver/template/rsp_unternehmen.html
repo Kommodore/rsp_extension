@@ -1,0 +1,193 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- INCLUDE rsp_overall.html -->
+
+<div class="panel">
+	<div class="inner">
+
+	<div class="content">
+
+<!-- IF S_UNTERNEHMEN -->
+	<h2>{L_USER_UNTERNEHMEN}:</h2>
+	<fieldset>
+		<dl>
+			<dt>{L_RSP_UNTERNEHMEN} ({L_ANZAHL_UNTERNEHMEN} / {L_MAX_UNTERNEHMEN})</dt>
+			<dd>{L_RSP_BETRIEB}</dd>
+		<!-- BEGIN unternehmen_block -->
+		</dl><dl>
+			<dt style="width: 50%"><h3><a href="{unternehmen_block.URL}" name="{unternehmen_block.NAME}">{unternehmen_block.NAME}</a></h3></dt>
+			<dd style="margin-left: 51%;margin-top:30px;padding-left:20px;"><ul>
+			<!-- BEGIN unternehmen_block.betriebe -->
+				<li>{unternehmen_block.betriebe.NAME} (Stufe {unternehmen_block.betriebe.STUFE}) in {unternehmen_block.betriebe.PROVINZ_NAME}</li>
+			<!-- END unternehmen_block.betriebe -->
+			</ul></dd>
+		<!-- END unternehmen_block -->
+		</dl>
+	</fieldset>
+	</div>
+
+	</div>
+</div>
+
+<!-- IF S_UNTERNEHMEN_AUSBAUFAHIG -->
+<form id="postform" method="post" action="{U_UNTERNEHMEN_ACTION}">
+<div class="panel">
+	<div class="inner">
+
+	<div class="content">
+	<h2>{L_UNTERNEHMEN_ERSTELLEN}:</h2>
+
+<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+
+	<fieldset>
+		<dl>
+			<dt>{L_UNTERNEHMEN_NAME}</dt>
+			<dd><input class="inputbox" type="text" name="unternehmen" id="unternehmen" size="20"></input>
+			</dd>
+		</dl>
+		<dl>
+			<dt>{L_WAEHLE_GUETERBEREICH}</dt>
+			<dd><select name="gueterbereich" id="gueterbereich">{U_LISTE_GUETERBEREICH}</select>
+			</dd>
+		</dl>
+			<div class="right-box">
+			<input class="button2" type="submit" name="unternehmen_erstellen" value="{L_ERSTELLEN}" />
+			{S_FORM_TOKEN}
+		</div>
+	</fieldset>
+	</div>
+	</div>
+</div>
+</form>
+<!-- ENDIF -->
+<!-- ENDIF -->
+
+<!-- IF S_EIGENES_UNTERNEHMEN and S_BETRIEB  -->
+	<h2>{L_UNTERNEHMEN_NAME}:</h2>
+	<fieldset>
+		<dl>
+			<dt>{L_RSP_BETRIEB} ({L_ANZAHL_BETRIEBE} / {L_MAX_BETRIEBE})</dt>
+			<dd>{L_RSP_BETRIEB_ROHSTOFFE}</dd>
+		<!-- BEGIN betrieb_block -->
+			<!-- IF not betrieb_block.S_FIRST_ROW -->{S_FORM_TOKEN}</form><!-- ENDIF -->
+			<script>
+			$( document ).ready( function() {
+				$( "#slider-{betrieb_block.ID}").slider({
+					range: "min",
+					value: 0,
+					min: 0,
+					max: {betrieb_block.MAX_PRODUKTION},
+					slide: function( event, ui ) {
+						$( "#produktion-{betrieb_block.ID}" ).val(ui.value);
+						$( "#produktion-{betrieb_block.ID} ~ #produktion_anzahl").val(ui.value);
+						var zahl = 1;
+						while($("#rohstoff-"+{betrieb_block.ID}+"-"+zahl).length > 0)
+						{
+							$("#rohstoff-"+{betrieb_block.ID}+"-"+(zahl+1)).text(ui.value * parseInt($("#rohstoff-"+{betrieb_block.ID}+"-"+(zahl)).text()));
+							zahl+=2;
+						}
+					}
+				});
+				$( "#produktion-{betrieb_block.ID}" ).val( $( "#slider-{betrieb_block.ID}" ).slider( "value" ));
+				$( "#produktion-{betrieb_block.ID} ~ #produktion_anzahl").val( $( "#slider-{betrieb_block.ID}" ).slider( "value" ));
+			});
+			</script>
+		</dl><hr />
+		<dl id="betrieb-{betrieb_block.ID}">
+			<form id="postform" method="post" action="{U_UNTERNEHMEN_ACTION}">
+				<dt>{betrieb_block.NAME}</dt>
+				<dd>
+					<label for="produktion-{betrieb_block.ID}">{L_PRODUKTION}</label>
+					<!-- IF S_EIGENES_UNTERNEHMEN -->
+					<input type="text" id="produktion-{betrieb_block.ID}" style="border: 0; font-weight: bold;" readonly/>
+					<input class="hidden" type="text" name="betrieb_id" id="betrieb_id" value="{betrieb_block.ID}" />
+					<input class="hidden" type="text" name="produktion_anzahl" id="produktion_anzahl" value="0" />
+					<span class="right-box"><a href="{betrieb_block.LOESCHEN_URL}">{L_LOESCHEN}</a></span>
+					<!-- ENDIF -->
+				</dd>
+				<!-- IF .betrieb_block.ress -->
+					<!-- BEGIN betrieb_block.ress -->
+						<dd>{betrieb_block.ress.NAME}(<span id="rohstoff-{betrieb_block.ress.ID}-{betrieb_block.ress.ZAHL}">{betrieb_block.ress.MENGE}</span>): <span id="rohstoff-{betrieb_block.ress.ID}-{betrieb_block.ress.ZAHL}">0</span></dd>
+					<!-- END betrieb_block.ress -->
+				<!-- ELSE -->
+					<dd>{L_KEINE}</dd>
+				<!-- ENDIF -->
+
+				<!-- IF S_EIGENES_UNTERNEHMEN -->
+				<dd><div id="slider-{betrieb_block.ID}" style="margin:5px 10px;"></div>
+				<input class="button2" type="submit" name="produkt_bauen" value="{L_PRODUZIEREN}" /></dd>
+				<!-- ENDIF -->
+			<!-- IF betrieb_block.S_LAST_ROW -->
+			{S_FORM_TOKEN}</form>
+			<!-- ENDIF -->
+		<!-- END betrieb_block -->
+		<!-- IF UNTERNEHMEN_LOESCHEN -->
+		<form id="postform" method="post" action="{U_UNTERNEHMEN_ACTION}">
+			<br /><br /><input class="button2" type="submit" name="unternehmen_loeschen" value="{L_UNTERNEHMEN_LOESCHEN}" /></dd>
+		{S_FORM_TOKEN}</form>
+		<!-- ENDIF -->
+		</dl>
+	</fieldset>
+	</div>
+
+	</div>
+</div>
+
+<!-- IF S_BETRIEBE_AUSBAUFAHIG -->
+<form id="postform" method="post" action="{U_UNTERNEHMEN_ACTION}">
+<div class="panel">
+	<div class="inner">
+
+	<div class="content">
+	<h2>{L_BETRIEB_BAUEN}:</h2>
+
+<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+
+	<fieldset>
+		<dl>
+			<dt>{L_WAEHLE_BETRIEB}</dt>
+			<dd><select name="betrieb" id="betrieb">{U_LISTE_BETRIEBE}</select>
+			</dd>
+		</dl>
+		<dl>
+			<dt>{L_WAEHLE_PROVINZ}</dt>
+			<dd><select name="provinz" id="provinz">{U_LISTE_PROVINZEN}</select>
+			</dd>
+		</dl>
+			<div class="right-box">
+			<input class="button2" type="submit" name="gebaude_bauen" value="{L_BAUEN}" />
+			{S_FORM_TOKEN}
+		</div>
+	</fieldset>
+	</div>
+	</div>
+</div>
+</form>
+<!-- ENDIF -->
+<!-- ENDIF -->
+<!-- IF not S_EIGENES_UNTERNEHMEN and S_BETRIEB  -->
+	<h2>{L_UNTERNEHMEN_NAME}:</h2>
+	<fieldset>
+		<dl>
+			<dt>{L_RSP_BETRIEB} ({L_ANZAHL_BETRIEBE} / {L_MAX_BETRIEBE})</dt>
+			<dd>{L_RSP_BETRIEB_ROHSTOFFE}</dd>
+		<!-- BEGIN betrieb_block -->
+		</dl><hr />
+		<dl id="betrieb-{betrieb_block.ID}">
+			<form id="postform" method="post" action="{U_UNTERNEHMEN_ACTION}">
+				<dt>{betrieb_block.NAME}</dt>
+				<dd>
+					<label for="produktion-{betrieb_block.ID}">{L_PRODUKTION}</label>
+				</dd>
+				{betrieb_block.RESSOURCEN}
+		<!-- END betrieb_block -->
+		</dl>
+	</fieldset>
+	</div>
+
+	</div>
+</div>
+<!-- ENDIF -->
+
+<!-- INCLUDE jumpbox.html -->
+<!-- INCLUDE overall_footer.html -->
