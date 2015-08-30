@@ -26,6 +26,21 @@ services:
             - @tacitus89.rsp.operator.unternehmen
             - %core.root_path%
             - %core.php_ext%
+    tacitus89.rsp.admin.controller:
+        class: tacitus89\rsp\controller\admin_controller
+        arguments:
+            - @config
+            - @controller.helper
+            - @pagination
+            - @log
+            - @dbal.conn
+            - @request
+            - @template
+            - @user
+            - @service_container
+            - %core.root_path%
+            - %core.table_prefix%
+            - %core.php_ext%
 
     tacitus89.rsp.operator.ressourcen:
         class: tacitus89\rsp\operators\ressourcen
