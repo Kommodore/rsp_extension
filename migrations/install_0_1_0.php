@@ -318,29 +318,14 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 			array('custom', array(array($this, 'insert_rsp_story_options'))),
 			array('custom', array(array($this, 'insert_rsp_story_part'))),
 
-			array('module.add', array('acp', false, 'ACP_RSP')),
-			array('module.add', array('acp', 'ACP_RSP', 'RSP_USER')),
-			array('module.add', array('acp', 'ACP_RSP', 'RSP_TRADING')),
-			array('module.add', array('acp', 'ACP_RSP', 'RSP_CHANGELOG')),
-			array('module.add', array(
-				'acp', 'RSP_USER', array(
-					'module_basename'	=> '\tacitus89\rsp\acp\rsp_user_module',
-					'modes'				=> array('user', 'rank', 'wirtschaft'),
-				),
-			)),
-			array('module.add', array(
-				'acp', 'RSP_TRADING', array(
-					'module_basename'	=> '\tacitus89\rsp\acp\rsp_trading_module',
-					'module_mode'		=> 'trader',
-				),
-			)),
-			array('module.add', array(
-				'acp', 'RSP_CHANGELOG', array(
-					'module_basename'	=> '\tacitus89\rsp\acp\rsp_changelog_module',
-					'modes'				=> array('add','manage'),
-				),
-			)),
 			/*
+			array('module.add', array('acp', 'ACP_CAT_DOT_MODS', 'ACP_GAMES_INDEX')),
+			array('module.add', array(
+				'acp', 'ACP_GAMES_INDEX', array(
+					'module_basename'	=> '\tacitus89\gamesmod\acp\gamesmod_module',
+					'modes'				=> array('config', 'management'),
+				),
+			)),
 			//Set UCP-Module
 			array('module.add', array('ucp', false, 'UCP_GAMES_INDEX')),
 			array('module.add', array(
@@ -1261,28 +1246,6 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 					'user_rsp',
 				),
 			),
-			array('module.remove', array(
-				'acp', 'RSP_USER', array(
-					'module_basename'	=> '\tacitus89\rsp\acp\rsp_user_module',
-					'modes'				=> array('user', 'rank', 'wirtschaft'),
-				),
-			)),
-			array('module.remove', array(
-				'acp', 'RSP_TRADING', array(
-					'module_basename'	=> '\tacitus89\rsp\acp\rsp_trading_module',
-					'module_mode'				=> 'trader',
-				),
-			)),
-			array('module.remove', array(
-				'acp', 'RSP_CHANGELOG', array(
-					'module_basename'	=> '\tacitus89\rsp\acp\rsp_changelog_module',
-					'modes'				=> array('add','manage'),
-				),
-			)),
-			array('module.remove', array('acp', 'ACP_RSP', 'RSP_USER')),
-			array('module.remove', array('acp', 'ACP_RSP', 'RSP_TRADING')),
-			array('module.remove', array('acp', 'ACP_RSP', 'RSP_CHANGELOG')),
-			array('module.remove', array('acp', false, 'ACP_RSP')),
 		);
 	}
 }
