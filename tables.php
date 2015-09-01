@@ -18,6 +18,8 @@ class tables
 		'changelog'				=> 'rsp_changelog',
         'gebaude'               => 'rsp_gebaude_info',
 		'haendler'				=> 'rsp_haendler',
+		'handel_log'			=> 'rsp_handel_log',
+		'land'					=> 'rsp_land',
         'provinzen'             => 'rsp_provinzen',
 		'rsp_raenge'            => 'rsp_raenge',
         'ressourcen'            => 'rsp_ressourcen',

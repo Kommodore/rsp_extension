@@ -20,7 +20,7 @@ interface admin_interface
 	/**
 	* Display user selection
 	*
-	* @return nill
+	* @return null
 	* @access public
 	*/
 	public function user_selection();
@@ -28,10 +28,11 @@ interface admin_interface
 	/**
 	* Get the overview of a selected user
 	*
+	* @param int user_id The ID of the user to be edited
 	* @return null
 	* @access public
 	*/
-	public function user_overview();
+	public function user_overview($user_id);
 
 	/**
 	* Edit the rank of a user
@@ -40,15 +41,16 @@ interface admin_interface
 	* @return null
 	* @access public
 	*/
-	public function rank_overview();
+	public function rank_overview($user_id);
 	
 	/**
 	* Edit the wirtschaft of a user
 	*
+	* @param int user_id The ID of the user where the wirtschaft should be edited
 	* @return null
 	* @access public
 	*/
-	public function wirtschaft_overview();
+	public function wirtschaft_overview($user_id);
 	
 	/**
 	* Display trader
@@ -80,26 +82,47 @@ interface admin_interface
 	/**
 	* Allow a user to participate in the RSP
 	*
+	* @param int user_id The ID of the user to be created
 	* @return null
 	* @access public
 	*/
-	public function add_rsp_user();
+	public function add_rsp_user($user_id);
 	
 	/**
 	* Delete a user from the rsp
 	*
+	* @param int user_id The ID of the user to be deleted
 	* @return null
 	* @access public
 	*/
-	public function delete_rsp_user();
+	public function delete_rsp_user($user_id);
 	
 	/**
 	* Update the rsp details of a user
 	*
+	* @param int user_id The ID of the user to be updated
 	* @return null
 	* @access public
 	*/
-	public function update_rsp_user();
+	public function update_rsp_user($user_id);
+	
+	/**
+	* Add a resource to a user
+	*
+	* @param int user_id The ID of the user where the wirtschaft should be edited
+	* @return null
+	* @access public
+	*/
+	public function wirtschaft_add_ress($user_id);
+	
+	/**
+	* Substract a resource from a user
+	*
+	* @param int user_id The ID of the user where the wirtschaft should be edited
+	* @return null
+	* @access public
+	*/
+	public function wirtschaft_delete_ress($user_id);
 	
 	/**
 	* Update the rank of a user
@@ -107,7 +130,7 @@ interface admin_interface
 	* @return null
 	* @access public
 	*/
-	public function update_rsp_rank();
+	public function update_rsp_rank($user_id);
 	
 	/**
 	* Add an entry in the changelog

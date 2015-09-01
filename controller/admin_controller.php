@@ -96,7 +96,8 @@ class admin_controller implements admin_interface
 	* @return null
 	* @access public
 	*/
-	public function user_selection(){
+	public function user_selection()
+	{
 		$this->tpl_name = 'acp_rsp_user';
 		$this->template->assign_vars(array(
 			'S_MODE' 			=>	$mode,
@@ -111,32 +112,25 @@ class admin_controller implements admin_interface
 	* @return null
 	* @access public
 	*/
-	public function user_overview(){
-		// Get username from previous form
-		$username = utf8_normalize_nfc(request_var('username','',true));
-		
+	public function user_overview($user_id)
+	{
 		// Get RSP Userdata
-		$sql = 'SELECT user_id, user_rsp, user_rsp_land_id, user_rsp_name FROM '. USERS_TABLE .' WHERE username_clean = "'. strtolower($this->db->sql_escape($username)) .'"';
+		$sql = 'SELECT username, user_rsp, user_rsp_land_id, user_rsp_name FROM '. USERS_TABLE .' WHERE user_id = '. (int) $user_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 		
-		// If user isn't existing throw error
-		if($row['user_id'] == 0){
-			trigger_error($this->user->lang('NO_USER') . adm_back_link($this->u_action), E_USER_WARNING);
-		}
-		
 		// Pass variables to the teamplate
 		$this->template->assign_vars(array(
-			'MANAGED_USERNAME' 		=> $username,
-			'S_USER_IN_RSP'			=> ($row['user_rsp']==1) ? true : false,
-			'S_USER_NOT_IN_RSP'		=> ($row['user_rsp']==0) ? true : false,
+			'MANAGED_USERNAME' 		=> $row['username'],
+			'S_USER_IN_RSP'			=> ($row['user_rsp']) ? true : false,
+			'S_USER_NOT_IN_RSP'		=> (!$row['user_rsp']) ? true : false,
 			'U_RSP_USER_LAND_FRT'	=> ($row['user_rsp_land_id']==1) ? true : false,
 			'U_RSP_USER_LAND_USR'	=> ($row['user_rsp_land_id']==2) ? true : false,
 			'U_RSP_USER_LAND_VRB'	=> ($row['user_rsp_land_id']==3) ? true : false,
 			'U_RSP_USERNAME'		=> $row['user_rsp_name'],
-			'U_USER_ID'				=> $row['user_id'],
-			'S_RSP_USER_OVERVIEW' 	=> true
+			'S_RSP_USER_OVERVIEW' 	=> true,
+			'U_ACTION'				=> build_url() .'&amp;u='.$user_id
 		));
 	}
 	
@@ -144,53 +138,47 @@ class admin_controller implements admin_interface
 	* Display all ranks and the rank of the selected user
 	*
 	* Display the rank and office of a selected user
+	* @param int user_id the ID of the user to be edited
 	* @return null
 	* @access public
 	*/
-	public function rank_overview(){
-		
-		// Get username from previous form
-		$username = utf8_normalize_nfc(request_var('username','',true));
+	public function rank_overview($user_id){
 		
 		// Load user details
-		$sql = 'SELECT r.url, r2.beruf as amt, u.user_id ,u.user_rsp_rang, u.user_rsp_amt
+		$sql = 'SELECT r.url, r2.beruf as amt ,u.user_rsp_rang, u.user_rsp_amt, u.username
 				FROM ' . USERS_TABLE . ' u
 				LEFT JOIN '. $this->db_prefix .'rsp_raenge r ON r.id = u.user_rsp_rang
 				LEFT JOIN '. $this->db_prefix .'rsp_raenge r2 ON r2.id = u.user_rsp_amt
-				WHERE u.username_clean = "' . strtolower($this->db->sql_escape($username)) . '"';
+				WHERE u.user_id = "'. (int) $user_id .'"';
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		
-		if(isset($_POST['update_rank'])){
-			$this->update_rsp_rank();
-		}
-		
 		// Pass the first set of variables to the teamplate
 		$this->template->assign_vars(array(
-			'MANAGED_USERNAME' 		=> $username,
+			'MANAGED_USERNAME' 		=> $row['username'],
 			'U_RSP_USER_AMT_NON'	=> ($row['amt'] == 0) ? true:false,
 			'U_RSP_USER_AMT_GOV'	=> ($row['amt'] == 'GOV')? true:false,
 			'U_RSP_USER_AMT_PRA'	=> ($row['amt'] == 'PRA')? true:false,
 			'U_RSP_USER_AMT_SEK'	=> ($row['amt'] == 'SEK')? true:false,
 			'U_RSP_USER_AMT_MIN'	=> ($row['amt'] == 'MIN')? true:false,
 			'U_RSP_USER_RANK_BILD'	=> $this->root_path.$this->ext_path.$row['url'],
-			'U_USERNAME'			=> $this->request->variable('username',''),
-			'S_RSP_USER_RANK' 		=> true
+			'S_RSP_USER_RANK' 		=> true,
+			'U_ACTION'				=> build_url() .'&amp;u='.$user_id
 		));
 		
 		// Load all possible ranks
 		$sql = 'SELECT r.id, r.name, r.beruf, r.stufe, r.url, l.id AS land_id, l.name AS landname, u.user_rsp_rang
-				FROM '. $this->db_prefix .'rsp_land l
-				LEFT JOIN ' . $this->db_prefix .'rsp_raenge r ON l.id = r.land
-				LEFT JOIN ' . USERS_TABLE . ' u ON u.user_id = "'. $row['user_id'] .'"
-				ORDER BY l.id, r.beruf, r.stufe';
+			FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['land'] .' l
+			LEFT JOIN '. $this->db_prefix.\tacitus89\rsp\tables::$table['rsp_raenge'] .' r ON l.id = r.land
+			LEFT JOIN ' . USERS_TABLE . ' u ON u.user_id = "'. $row['user_id'] .'"
+			ORDER BY l.id, r.beruf, r.stufe';
 		$result = $this->db->sql_query($sql);
 		$land = -1;
 		
 		// Option to delete rank
 		$this->template->assign_block_vars('user_rang', array(
-				'ID'		=> -2,
-				'NAME'		=> '&nbsp;&nbsp;&nbsp;>>> Rang entfernen <<<',
+			'ID'		=> -2,
+			'NAME'		=> '&nbsp;&nbsp;&nbsp;>>> Rang entfernen <<<',
 		));
 		
 		// Pass all variables to the template
@@ -218,175 +206,137 @@ class admin_controller implements admin_interface
 	/**
 	* Edit the wirtschaft of a user
 	*
+	* @param int user_id The ID of the user where the wirtschaft should be edited
 	* @return null
 	* @access public
 	*/
-	public function wirtschaft_overview(){
-		$username = $this->request->variable('username','');
+	public function wirtschaft_overview($user_id)
+	{
+		
 		// Get RSP Userdata
-		$sql = 'SELECT user_id, user_rsp, username_clean FROM '. USERS_TABLE .' WHERE username_clean = "'. strtolower($this->db->sql_escape($username)) .'"';
+		$sql = 'SELECT user_rsp, username FROM '. USERS_TABLE .' WHERE user_id = '. (int) $user_id;
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
-		$user_id = $row['user_id'];
 		
-		if(isset($_POST['ress_submit'])){
-			$rsp_ress_menge = $this->request->variable('rsp_ress_menge',0);
-			$rsp_ress_art = $this->request->variable('rsp_ress_art',0);
-			$rsp_ress_text = $this->request->variable('rsp_ress_text','');
-			if($this->request->variable('rsp_ress_modus','') == 'add'){
-				// Add resources
-				$sql = 'UPDATE '. $this->db_prefix .'rsp_user_ress
-					SET menge = menge+'.$rsp_ress_menge.'
-					WHERE user_id = "'. $user_id .'" and
-						ress_id = '. $rsp_ress_art;
-				$this->db->sql_query($sql);
-				
-				// Create an entry in the handel log
-				$sql = 'INSERT INTO '. $this->db_prefix .'rsp_handel_log ' . $this->db->sql_build_array('INSERT', array(
-					'sender_id'	=> (int) 59,
-					'empfaenger_id'	=> (int) $user_id,
-					'zweck_text' => (string) htmlspecialchars_decode($rsp_ress_text),
-					'ressource_art' => (int) $rsp_ress_art,
-					'menge' => (int) $rsp_ress_menge,
-					'time' => (int) time(),
-					'status' => 1,
-				));
-				$this->db->sql_query($sql);
-				
-				redirect($this->u_action . '&amp;u=' . $user_id);
-			}
-			else{
-				// Substract resources
-				$sql = 'UPDATE '. $this->db_prefix .'rsp_user_ress
-					SET menge = menge-'.$rsp_ress_menge.'
-					WHERE user_id = "'. $user_id .'" and
-						ress_id = '. $rsp_ress_art;
-				$this->db->sql_query($sql);
-				
-				// Create an entry in the handel log
-				$sql = 'INSERT INTO '. $this->db_prefix .'rsp_handel_log ' . $this->db->sql_build_array('INSERT', array(
-					'sender_id'	=> (int) 59,
-					'empfaenger_id'	=> (int) $user_id,
-					'zweck_text' => (string) htmlspecialchars_decode($rsp_ress_text),
-					'ressource_art' => (int) $rsp_ress_art,
-					'menge' => (int) $rsp_ress_menge,
-					'time' => (int) time(),
-					'status' => 1,
-				));
-				$this->db->sql_query($sql);
-				
-				redirect($this->u_action . '&amp;u=' . $user_id);
-			}
-		}
-		else{
-			// Pass the first set of variables to the template
-			$this->template->assign_vars(array(
-				'S_RSP_WIRTSCHAFT' => true,
-				'S_USER_IN_RSP'		=> ($row['user_rsp']==1) ? true : false,
-				'U_USERNAME'		=> $row['username_clean'],
-				'MANAGED_USERNAME' => $username));
+		// Pass the first set of variables to the template
+		$this->template->assign_vars(array(
+			'S_RSP_WIRTSCHAFT' 	=> true,
+			'S_USER_IN_RSP'		=> ($row['user_rsp']==1) ? true : false,
+			'MANAGED_USERNAME' 	=> $row['username'],
+			'U_ACTION'			=> build_url() .'&amp;u='.$user_id
+		));
 						
-			// Create a list of all resources for the select menu
-			$sql = 'SELECT id, name
-				FROM '. $this->db_prefix .'rsp_ressourcen
-				ORDER BY id ASC';
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result)){
-				$this->template->assign_block_vars('ress_block', array(
-					'ID'		=> $row['id'],
-					'NAME'		=> $row['name'],
-				));
-			}
-			$this->db->sql_freeresult($result);
-			
-			//Create a list of all resources and how much of them the user owns
-			$sql = 'SELECT a.name, b.menge
-				FROM '. $this->db_prefix .'rsp_ressourcen a
-				LEFT JOIN '. $this->db_prefix .'rsp_user_ress b ON b.ress_id = a.id
-				WHERE b.user_id = ' . $user_id;
-			$result = $this->db->sql_query($sql);
-			
-			while ($row = $this->db->sql_fetchrow($result)){
-				$this->template->assign_block_vars('user_ress_block', array(
-					'NAME'		=> $row['name'],
-					'MENGE'		=> $row['menge'],
-				));
-			}
-			$this->db->sql_freeresult($result);
+		// Create a list of all resources for the select menu
+		$sql = 'SELECT id, name
+			FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['ressourcen'] .'
+			ORDER BY id ASC';
+		$result = $this->db->sql_query($sql);
+		while($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('ress_block', array(
+				'ID'		=> $row['id'],
+				'NAME'		=> $row['name'],
+			));
 		}
+		$this->db->sql_freeresult($result);
+		
+		//Create a list of all resources and how much of them the user owns
+		$sql = 'SELECT r.name, u.menge
+			FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['ressourcen'] .' r
+			LEFT JOIN '. $this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'] .' u ON u.ress_id = r.id
+			WHERE u.user_id = ' . (int) $user_id;
+		$result = $this->db->sql_query($sql);
+		
+		while($row = $this->db->sql_fetchrow($result))
+		{
+			$this->template->assign_block_vars('user_ress_block', array(
+				'NAME'		=> $row['name'],
+				'MENGE'		=> $row['menge'],
+			));
+		}
+		$this->db->sql_freeresult($result);
 	}
 	
 	/**
 	* Allow a user to participate in the rsp
 	*
+	* @param int user_id The ID of the user to be created
 	* @return null
 	* @access public
 	*/
-	public function add_rsp_user(){
+	public function add_rsp_user($user_id)
+	{
 		
 		// Get form data
-		$rsp_username = utf8_normalize_nfc(request_var('rsp_username','',true));
-		$user_id = request_var('user_id','');
-		$rsp_land_id = request_var('rsp_land','');
+		$rsp_username = $this->request->variable('rsp_username','',true);
+		$rsp_land_id = $this->request->variable('rsp_land',0);
 		
-		if(isset($_POST['create_rsp_user'])){
-			
-			//Update Database
-			$sql_array = array(
-				'user_rsp_name'     => $rsp_username,
-				'user_rsp_land_id'  => $rsp_land_id,
-				'user_rsp'      	=> 1
-			);
-
-			$sql = 'UPDATE ' . USERS_TABLE . '
-				SET ' . $this->db->sql_build_array('UPDATE', $sql_array) . '
-				WHERE user_id = ' . (int) $user_id;
+		// Update Database
+		$sql_array = array(
+			'user_rsp_name'     => $rsp_username,
+			'user_rsp_land_id'  => $rsp_land_id,
+			'user_rsp'      	=> 1
+		);
+		$sql = 'UPDATE ' . USERS_TABLE . '
+			SET ' . $this->db->sql_build_array('UPDATE', $sql_array) . '
+			WHERE user_id = ' . (int) $user_id;
+		$this->db->sql_query($sql);
+		
+		// Insert zero as value of all user resources linked to the new user
+		$sql = 'SELECT id
+			FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['ressourcen'] .'
+			ORDER BY id ASC';
+		$result = $this->db->sql_query($sql);
+		while($row = $this->db->sql_fetchrow($result))
+		{
+			$sql = 'INSERT INTO '. $this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'] .' (user_id,ress_id,menge) VALUES ('. (int) $user_id .','. $row['id'] .',0)';
 			$this->db->sql_query($sql);
 		}
+		$this->db->sql_freeresult($result);
 		
 		//Log action & throw success message
-		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $this->user->lang('RSP_USER_EDITED'));
+		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'RSP_USER_EDITED');
 		trigger_error($this->user->lang('RSP_CREATE_USER_SUCCESS') . adm_back_link($this->u_action));
 	}
 	
 	/**
 	* Delete a user from the rsp
 	*
+	* @param int user_id The ID of the user to be deleted
 	* @return null
 	* @access public
 	*/
-	public function delete_rsp_user(){
+	public function delete_rsp_user($user_id)
+	{
+		// Update Database
+		$sql = 'UPDATE ' . USERS_TABLE . '
+			SET user_rsp_name = "", user_rsp_land_id = 0, user_rsp = 0
+			WHERE user_id = ' . (int) $user_id;
+		$this->db->sql_query($sql);
 		
-		// Get form data
-		$user_id = request_var('user_id','');
+		// Delete ALL resources the user owned
+		$sql = 'DELETE FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'] .' WHERE user_id = '. (int) $user_id;
+		$this->db->sql_query($sql);
 		
-		if(isset($_POST['delete_rsp_user'])){
-			
-			//Update Database
-			$sql = 'UPDATE ' . USERS_TABLE . '
-				SET user_rsp_name = "", user_rsp_land_id = 0, user_rsp = 0
-				WHERE user_id = ' . (int) $user_id;
-			$this->db->sql_query($sql);
-		}
-		
-		//Log action & throw success message
-		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $this->user->lang('RSP_USER_EDITED'));
+		//Log action and throw success message
+		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'RSP_USER_EDITED');
 		trigger_error($this->user->lang('RSP_DELETE_USER_SUCCESS') . adm_back_link($this->u_action));
 	}
 	
 	/**
 	* Update the rsp details of a user
 	*
+	* @param int user_id The ID of the user to be updated
 	* @return null
 	* @access public
 	*/
-	public function update_rsp_user(){
+	public function update_rsp_user($user_id)
+	{
 		
 		// Get form data
-		$rsp_username = utf8_normalize_nfc(request_var('rsp_username','',true));
-		$user_id = request_var('user_id','');
-		$rsp_land_id = request_var('rsp_land','');
+		$rsp_username = $this->request->variable('rsp_username','',true);
+		$rsp_land_id = $this->request->variable('rsp_land','');
 		
 		//Update Database
 		$sql_array = array(
@@ -400,26 +350,101 @@ class admin_controller implements admin_interface
 		$this->db->sql_query($sql);
 		
 		//Log action & throw success message
-		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, $this->user->lang('RSP_USER_EDITED'));
-		trigger_error($this->user->lang('RSP_MANAGE_RANK_SUCCESS') . adm_back_link($this->u_action));
+		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'RSP_USER_EDITED');
+		trigger_error($this->user->lang('RSP_MANAGE_USER_SUCCESS') . adm_back_link($this->u_action));
+	}
+	
+	/**
+	* Add a resource to a user
+	*
+	* @param int user_id The ID of the user where the wirtschaft should be edited
+	* @return null
+	* @access public
+	*/
+	public function wirtschaft_add_ress($user_id)
+	{
+		// Grab form data
+		$rsp_ress_menge = $this->request->variable('rsp_ress_menge',0);
+		$rsp_ress_art = $this->request->variable('rsp_ress_art',0);
+		$rsp_ress_text = $this->request->variable('rsp_ress_text','');
+		
+		// Add resources
+		$sql = 'UPDATE '. $this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'] .'
+			SET menge = menge+'.$rsp_ress_menge.'
+			WHERE user_id = "'. $user_id .'" and
+				ress_id = '. $rsp_ress_art;
+		$this->db->sql_query($sql);
+		
+		// Create an entry in the handel log
+		$sql = 'INSERT INTO '. $this->db_prefix.\tacitus89\rsp\tables::$table['handel_log'] .' ' . $this->db->sql_build_array('INSERT', array(
+			'sender_id'	=> (int) 59,
+			'empfaenger_id'	=> (int) $user_id,
+			'zweck_text' => (string) htmlspecialchars_decode($rsp_ress_text),
+			'ressource_art' => (int) $rsp_ress_art,
+			'menge' => (int) $rsp_ress_menge,
+			'time' => (int) time(),
+			'status' => 1,
+		));
+		$this->db->sql_query($sql);
+		
+		redirect(build_url() .'&amp;u='.$user_id);
+	}
+	
+	/**
+	* Substract a resource from a user
+	*
+	* @param int user_id The ID of the user where the wirtschaft should be edited
+	* @return null
+	* @access public
+	*/
+	public function wirtschaft_delete_ress($user_id)
+	{
+		// Grab form data
+		$rsp_ress_menge = $this->request->variable('rsp_ress_menge',0);
+		$rsp_ress_art = $this->request->variable('rsp_ress_art',0);
+		$rsp_ress_text = $this->request->variable('rsp_ress_text','');
+		
+		// Add resources
+		$sql = 'UPDATE '. $this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'] .'
+			SET menge = menge-'.$rsp_ress_menge.'
+			WHERE user_id = "'. $user_id .'" and
+				ress_id = '. $rsp_ress_art;
+		$this->db->sql_query($sql);
+		
+		// Create an entry in the handel log
+		$sql = 'INSERT INTO '. $this->db_prefix.\tacitus89\rsp\tables::$table['handel_log'] .' ' . $this->db->sql_build_array('INSERT', array(
+			'sender_id'	=> (int) 59,
+			'empfaenger_id'	=> (int) $user_id,
+			'zweck_text' => (string) htmlspecialchars_decode($rsp_ress_text),
+			'ressource_art' => (int) $rsp_ress_art,
+			'menge' => (int) $rsp_ress_menge,
+			'time' => (int) time(),
+			'status' => 1,
+		));
+		$this->db->sql_query($sql);
+		
+		redirect(build_url() .'&amp;u='.$user_id);
 	}
 	
 	/**
 	* Update the rank of a user
 	*
+	* @param int user_id The ID of the user to be edited
 	* @return null
 	* @access public
 	*/
-	public function update_rsp_rank(){
+	public function update_rsp_rank($user_id){
+		
 		// Get form data
-		$rsp_rang	= (int) request_var('rsp_rang', 0);
-		$rsp_amt	= utf8_normalize_nfc(request_var('rsp_amt', '', true));
-		$username	= utf8_normalize_nfc(strtolower($this->request->variable('username', '')));
+		$rsp_rang	= $this->request->variable('rsp_rang', 0);
+		$rsp_amt	= $this->request->variable('rsp_amt', '');
+		
 		// Update user table with rank changes
-		if($rsp_rang == -2){
+		if($rsp_rang == -2)
+		{
 			$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_rsp_rang = 0
-					WHERE username_clean = "'. $this->db->sql_escape($username) .'"';
+					WHERE user_id = "'. (int) $user_id .'"';
 			$this->db->sql_query($sql);
 			$this->db->sql_freeresult($result);
 		}
@@ -427,16 +452,17 @@ class admin_controller implements admin_interface
 		{				
 			$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_rsp_rang = '. $rsp_rang .'
-					WHERE username_clean = "'. $this->db->sql_escape($username) .'"';
+					WHERE user_id = "'. (int) $user_id .'"';
 			$this->db->sql_query($sql);
 			$this->db->sql_freeresult($result);
 		}
 		
-		// If amt changed
-		if($rsp_amt != 'NON'){
+		// If user has an amt
+		if($rsp_amt != 'NON')
+		{
 			// Select ID's from amt table
 			$sql = 'SELECT id, name
-				FROM '. $this->db_prefix .'rsp_raenge
+				FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['rsp_raenge'] .'
 				WHERE beruf = "' . $rsp_amt . '"
 					AND stufe = 0
 					AND land = 0';
@@ -446,16 +472,17 @@ class admin_controller implements admin_interface
 			// Update user table
 			$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_rsp_amt = '. $row['id'] .'
-					WHERE username_clean = "'. $this->db->sql_escape($username) .'"';
+					WHERE user_id = "'. (int) $user_id .'"';
 			$this->db->sql_query($sql);
-			
 			$this->db->sql_freeresult($result);
 		}
-		elseif($rsp_amt == 'NON' && $row['user_rsp_amt'] != 0){
+		elseif($rsp_amt == 'NON' && $row['user_rsp_amt'] != 0)
+		{
+			
 			// Update user table
 			$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_rsp_amt = 0
-					WHERE username_clean = "'. $this->db->sql_escape($username) .'"';
+					WHERE user_id = "'. (int) $user_id .'"';
 			$this->db->sql_query($sql);
 		}
 		trigger_error($this->user->lang('RSP_MANAGE_RANK_SUCCESS') . adm_back_link($this->u_action));
@@ -650,7 +677,7 @@ class admin_controller implements admin_interface
 		generate_text_for_storage($text, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
 		// after creating it, display the preview to the user
-		$text			= generate_text_for_display($text, $uid, $bitfield, $options);
+		$text = generate_text_for_display($text, $uid, $bitfield, $options);
 		
 		return $text;
 	}
