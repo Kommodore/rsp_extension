@@ -284,16 +284,17 @@ class admin_controller implements admin_interface
 		$this->db->sql_query($sql);
 		
 		// Insert zero as value of all user resources linked to the new user
-		$sql = 'SELECT id
+		$sql = 'SELECT id as ress_id
 			FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['ressourcen'] .'
 			ORDER BY id ASC';
 		$result = $this->db->sql_query($sql);
-		while($row = $this->db->sql_fetchrow($result))
-		{
-			$sql = 'INSERT INTO '. $this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'] .' (user_id,ress_id,menge) VALUES ('. (int) $user_id .','. $row['id'] .',0)';
-			$this->db->sql_query($sql);
-		}
+		$row = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
+		for($i = 0; $i < count($row); $i++){
+			$row[$i]['user_id'] = $user_id;
+			$row[$i]['menge'] = 0;
+		}
+		$this->db->sql_multi_insert($this->db_prefix.\tacitus89\rsp\tables::$table['user_ress'], $row);
 		
 		//Log action & throw success message
 		$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'RSP_USER_EDITED');
