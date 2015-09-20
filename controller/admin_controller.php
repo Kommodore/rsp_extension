@@ -10,6 +10,7 @@
 namespace tacitus89\rsp\controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use \tacitus89\rsp\Entity\changelog;
 
 /**
 * Admin controller
@@ -607,19 +608,8 @@ class admin_controller implements admin_interface
 		{	
 			
 			// Store form content in database
-			$uid_text = $bitfield_text = $options_text = '';
-			$allow_bbcode = $allow_urls = $allow_smilies = true;
-			generate_text_for_storage($this->request->variable('rsp_changelog_text', '', true), $uid_text, $bitfield_text, $options_text, $allow_bbcode, $allow_urls, $allow_smilies);
-			
-			$sql = 'INSERT INTO '. $this->db_prefix.\tacitus89\rsp\tables::$table['changelog'] .' ' . $this->db->sql_build_array('INSERT', array(
-				'time'			=> time(),
-				'text'			=> $this->request->variable('rsp_changelog_text', '', true),
-				'text_uid'		=> $uid_text,
-				'text_bitfield'	=> $bitfield_text,
-				'text_options'	=> $options_text,
-				));
-			$this->db->sql_query($sql);
-			
+			$text = $this->request->variable('rsp_changelog_text', '', true);
+			$this->container->get('tacitus89.rsp.entity.changelog')->set_text($text)->insert();		
 			trigger_error($this->user->lang['RSP_CHANGELOG_ENTRY_ADDED'] . adm_back_link($this->u_action));
 		}
 		
@@ -651,14 +641,23 @@ class admin_controller implements admin_interface
 	*/
 	public function changelog_delete($entry_id)
 	{
-		
-		// Only execute delete query if a entry id was submitted (!=0)
-		if($entry_id!=0)
-		{
-			$sql = 'DELETE FROM '. $this->db_prefix.\tacitus89\rsp\tables::$table['changelog'] .'
-				WHERE id = '. (int) $entry_id;
-			$this->db->sql_query($sql);
+		// Use a confirmation box routine when deleting an entry
+		if(confirm_box(true)){
+			$this->container->get('tacitus89.rsp.entity.changelog')->delete($entry_id);
 			trigger_error($this->user->lang['RSP_CHANGELOG_ENTRY_DELETED'] . adm_back_link($this->u_action));
+		}
+		else
+		{
+			// Request confirmation from the user to delete the game
+			confirm_box(false, $this->user->lang('ACP_CONFIRM_DELETE_ENTRY'), build_hidden_fields(array(
+				'mode' => 'manage',
+				'action' => 'delete',
+				'entry_id' => $entry_id,
+			)));
+
+			// Use a redirect to take the user back to the previous page
+			// if the user chose not delete the entry from the confirmation page.
+			redirect(build_url()."&amp;action=manage");
 		}
 	}
 	
