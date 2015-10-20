@@ -110,3 +110,9 @@ services:
         arguments:
             - @dbal.conn
             - %core.table_prefix%
+    tacitus89.rsp.entity.haendler:
+        class: tacitus89\rsp\entity\haendler
+        scope: prototype # scope MUST be prototype for this to work!
+        arguments:
+            - @dbal.conn
+            - %core.table_prefix%
