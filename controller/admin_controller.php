@@ -534,7 +534,7 @@ class admin_controller implements admin_interface
 	{
 		if($res_id!=0)
 		{
-			$this->container->get('tacitus89.rsp.entity.haendler')->set_preis($res_id,$price);
+			$this->container->get('tacitus89.rsp.entity.haendler')->set_preis($res_id,$price)->save();
 			trigger_error($this->user->lang['RSP_TRADER_UPDATED'] . adm_back_link($this->u_action));
 		}
 	}

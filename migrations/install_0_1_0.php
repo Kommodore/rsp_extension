@@ -106,7 +106,7 @@ class install_0_1_0 extends \phpbb\db\migration\migration
 				),
 				$this->table_prefix . 'rsp_haendler' => array(
 					'COLUMNS' => array(
-						'ressource_id'			=> array('UINT:10', 0),
+						'id'			=> array('UINT:10', 0),
 						'preis'					=> array('UINT:10', 0),
 					),
 					'PRIMARY_KEY'	=> 'ressource_id',

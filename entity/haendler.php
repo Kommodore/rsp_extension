@@ -106,28 +106,9 @@ class haendler extends abstractEntity
 	{
 
 		// Set the description to our data array
-		$this->data['ressource_id'] = $id;
+		$this->data['id'] = $id;
 		$this->data['preis'] = $preis;
 		
-		//Set the id from the subClasses
-		$subClassesArray = array();
-		foreach(static::$subClasses as $field => $value)
-		{
-			$subClassesArray[$field] = $this->data[$field];
-			$this->data[$field] = $subClassesArray[$field]->get_id();
-		}
-
-		$sql = 'UPDATE '. $this->db_prefix.\tacitus89\rsp\tables::$table['haendler'] .'
-			SET ' . $this->db->sql_build_array('UPDATE', $this->data) . '
-			WHERE ressource_id = ' . $this->data['ressource_id'];
-		$this->db->sql_query($sql);
-
-		//Set the objects back to data
-		foreach(static::$subClasses as $field => $value)
-		{
-			$this->data[$field] = $subClassesArray[$field];
-		}
-
 		return $this;
 	}
 }
