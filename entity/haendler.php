@@ -19,7 +19,7 @@ class haendler extends abstractEntity
 	*
 	**/
 	protected static $fields = array(
-		'ressource_id'              => 'integer',
+		'id'              => 'integer',
 		'preis'                  	=> 'integer',
 	);
 
@@ -32,7 +32,7 @@ class haendler extends abstractEntity
 	* Some fields must be unsigned (>= 0)
 	**/
 	protected static $validate_unsigned = array(
-		'ressource_id',
+		'id',
 		'preis',
 	);
 
